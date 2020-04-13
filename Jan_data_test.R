@@ -26,10 +26,12 @@ durationmodel <- lm(tripduration ~ start.station.id + end.station.id, data = jan
 summary(durationmodel)
 
 #Predict outcomes
+library(lmtest)
+
 newvalue <- data.frame(start.station.id = 3272 , end.station.id = 3270)
 predict(durationmodel, newdata=newvalue)
 predict(durationmodel, newdata=newvalue, interval="prediction")
-shapiro.test(residuals(durationmodel))
+shapiro.test(residuals(durationmodel[0:5000]))
 residualPlots(durationmodel)
 
 #Generalized linear model for prediction
