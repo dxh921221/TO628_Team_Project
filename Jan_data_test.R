@@ -1,9 +1,11 @@
 jandata <- read.csv("JC-201901-citibike-tripdata.csv")
 str(jandata)
 summary(jandata)
+
 #cleaning data
 jandata$bikeid <- NULL
-jandata$tripduration <- as.factor(jandata$tripduration)
+
+#separate test and train data
 set.seed(12345)
 jandata_rand <- jandata[order(runif(1000)), ]
 
@@ -20,12 +22,19 @@ library(C50)
 jandata_model <- C5.0(jandata_train[], jandata_train$tripduration)
 
 #Linear model
-durationmodel <- lm(tripduration ~ starttime, data = jandata_train)
+durationmodel <- lm(tripduration ~ start.station.id + end.station.id, data = jandata_train)
 summary(durationmodel)
+
+#Predict outcomes
+newvalue <- data.frame(start.station.id = 3272 , end.station.id = 3270)
+predict(durationmodel, newdata=newvalue)
+predict(durationmodel, newdata=newvalue, interval="prediction")
+shapiro.test(residuals(durationmodel))
+residualPlots(durationmodel)
 
 #Generalized linear model for prediction
 #logit.model <- glm(tripduration ~ starttime , data = jandata_train, family = "binomial")
 #summary(logit.model)
 
-#Predict outcomes
+
 
