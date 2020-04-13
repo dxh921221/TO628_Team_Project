@@ -1,5 +1,5 @@
 #To combine bike data with weather data
-
+s
 #Extract year, month, date from bike data
 jan_bike <- read.csv("JC-201901-citibike-tripdata.csv")
 
