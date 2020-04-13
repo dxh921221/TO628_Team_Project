@@ -16,7 +16,7 @@ jandata_train <- jandata[1:9000, ]
 jandata_test  <- jandata[9001:19676, ]
 
 #Generalized linear model for prediction
-logit.model <- glm(tripduration ~ starttime , data = jandata, family = "binomial")
+logit.model <- glm(tripduration ~ starttime , data = jandata_train, family = "binomial")
 summary(logit.model)
 
 #Predict outcomes
