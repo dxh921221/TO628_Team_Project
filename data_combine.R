@@ -24,6 +24,7 @@ bike$start_day <- as.factor(substr(bike$starttime,9,10))
 
 write.csv(bike,"C:\\Users\\Xuhao Dai\\OneDrive - Umich\\School\\Master Program - IOE\\Winter 2020\\TO 628\\Team Project\\TO628_Team_Project\\2019_withdate.csv")
 
+
 #Check weather data
 nycw <- read.csv("nycweather.csv")
 
@@ -33,8 +34,19 @@ nycw_2019 <- subset(nycw,start_year == 2019)
 nycw_2019$start_year <- as.factor(nycw_2019$start_year)
 nycw_2019$start_mth <- as.factor(substr(nycw_2019$Date,6,7))
 nycw_2019$start_day <- as.factor(substr(nycw_2019$Date,9,10))
+
+#remove duplicates
+library(tidyverse)
+nycw_2019 <-distinct(nycw_2019)
+nycw_2019 <- nycw_2019[-181,] #found two rows for 6/30/2019
 str(nycw_2019)
+
 
 #Write a csv file with new columns year, month, date 
 
 write.csv(nycw_2019,"C:\\Users\\Xuhao Dai\\OneDrive - Umich\\School\\Master Program - IOE\\Winter 2020\\TO 628\\Team Project\\TO628_Team_Project\\weather2019.csv")
+
+#merge bike data with weather data 
+bike_weather <- merge(bike,nycw_2019,by.x = c("start_year","start_mth","start_day"), by.y = c("start_year","start_mth", "start_day"))
+str(bike_weather)
+str(bike)
