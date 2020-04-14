@@ -50,3 +50,5 @@ write.csv(nycw_2019,"C:\\Users\\Xuhao Dai\\OneDrive - Umich\\School\\Master Prog
 bike_weather <- merge(bike,nycw_2019,by.x = c("start_year","start_mth","start_day"), by.y = c("start_year","start_mth", "start_day"))
 str(bike_weather)
 str(bike)
+
+write.csv(bike_weather,"C:\\Users\\Xuhao Dai\\OneDrive - Umich\\School\\Master Program - IOE\\Winter 2020\\TO 628\\Team Project\\TO628_Team_Project\\traindata_2019.csv")
