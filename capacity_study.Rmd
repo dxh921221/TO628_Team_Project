@@ -1,0 +1,33 @@
+---
+title: "capacity_study"
+author: "Priti"
+date: "4/14/2020"
+output: html_document
+---
+
+
+## Data check
+
+
+
+```{r}
+stat_info <- read.csv("station_information.csv")
+str(stat_info)
+summary(stat_info)
+
+
+```
+
+
+## Data anlysis
+
+```{r}
+ plot(x=stat_info$station_id, y=stat_info$capacity, main="Capacity per station", xlab="Station id",  ylab="Capacity")
+ plot(x=stat_info$region_id, y=stat_info$capacity, main="Capacity per region", xlab="Region id",  ylab="Capacity")
+ 
+
+boxplot(capacity ~ region_id, data= stat_info, main="Capacity by region", xlab="Region id", ylab="Capacity" )
+
+hist(stat_info$capacity)
+```
+
