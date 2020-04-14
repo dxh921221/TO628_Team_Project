@@ -19,7 +19,7 @@ summary(stat_info)
 ```
 
 
-## Data anlysis
+## Data analysis
 
 ```{r}
  plot(x=stat_info$station_id, y=stat_info$capacity, main="Capacity per station", xlab="Station id",  ylab="Capacity")
@@ -59,4 +59,18 @@ ggplot(data = world) +
 
 
 ```
+
+## Append capacity data with 2019traindata.csv
+
+```{r}
+
+biketraindata <- read.csv("2019traindata.csv")
+biketraindata$capacity <- stat_info$capacity[match(biketraindata$start.station.id , stat_info$station_id)]
+str(biketraindata)
+summary(biketraindata)
+#write.csv(biketraindata,"2019traindata_capacity.csv")
+
+
+```
+
 
