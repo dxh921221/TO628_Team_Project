@@ -1,0 +1,120 @@
+
+---
+title: "TO 628 Final Team Project"
+author: "Yongsoo Shin"
+date: "Due on April 20, 2020"
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+# Class Topics
+Topics learned so far:
+
+  1. Linear Regression
+  2. Logistic Regression
+  3. KNN
+  4. ANN
+  5. SVM
+  6. Decision Trees
+  7. Random Forest
+
+# Read Me
+This document serves as a subsidary document to a group project for which city bike data in NYC is used. The purpose of this document is to share analysis of shortage and surplus at each bike station. The surplus and shortage will be calculated based on the sum of bike going into the station and coming out of the station on a daily basis. Thereafter, this sum will be added to compose the usage data per each month.
+
+Here, city bike data from 2019 will be used for the analysis. Specifically, 20% will be stored as a test data, and 80% will be stored as a train data. Particularily, the train data will be used to model the usage of the entire year per month (so 12 independent variables), and test data will be used to assess the accuracy of the chosen model with the best fit.
+
+Ultimately, the findings will be used to identify top 5 stations with most deficiency (most of the times, bikes are not available). Thereafter, a location (latitude, longitude) will be given to expand the business so that it offsets the high demand of the top 5 stations.
+
+# Dataset Explanation
+  - City bike data in NYC
+  - Each dataset is comprised of 1 month trip data
+    - Data from 12 months of 2019 have been combined
+    - The combined dataset has been divided into train (80%) and test (20%) datasets.
+  - Variables:
+    - trip duration (sec)
+    - start time
+    - stop time
+    - start station (id, lat/long)
+    - end station (id, lat/long)
+    - bike id
+    - user type
+      - customer (24 hr vs 3 day)
+      - subscriber (annual)
+    - birth year
+    - gender (0, 1, 2 = unknown, male, female)
+
+# Data Exploration
+```{r}
+#load data - entire 2019
+#entire_2019 = read.csv("2019traindata.csv")
+
+#load data - station information
+#station_info = read.csv("station_information.csv")
+
+#load data - train 2019
+#train_2019 = read.csv("bike_weather_train_2019.csv")
+
+#load data - test 2019
+#train_2019 = read.csv("bike_weather_train_2019.csv")
+
+#load data -- Dec 2019
+trip_data = read.csv("JC-201912-citibike-tripdata.csv")
+
+#trip_jan = read.csv("JC-201901-citibike-tripdata.csv")
+
+#explore data
+colnames(trip_data)
+str(trip_data)
+summary(trip_data)
+
+```
+
+# Further Data Exploration
+```{r}
+
+#1. trip duration
+boxplot(trip_data$tripduration, main = "raw trip duration (sec)")
+hist(trip_data$tripduration, main = "raw trip duration (sec)")
+#replace outliers with median values
+outlier_tripduration = quantile(trip_data$tripduration, 0.95)
+trip_data$tripduration = ifelse(trip_data$tripduration > outlier_tripduration, median(trip_data$tripduration), trip_data$tripduration)
+
+# check refined trip duration
+boxplot(trip_data$tripduration, main = "refined trip duration (sec)")
+hist(trip_data$tripduration, main = "refined trip duration (sec)")
+
+#2. start/end station latitude/longitude
+plot(trip_data$start.station.latitude, trip_data$start.station.longitude)
+summary(trip_data$start.station.latitude)
+summary(trip_data$start.station.longitude)
+
+#3. how many bikes are there?
+length(unique(trip_data$bikeid))
+
+#4. how many unknown genders are there?
+summary(factor(trip_data$gender))
+
+#5. birth year
+boxplot(trip_data$birth.year)
+hist(trip_data$birth.year)
+
+#if age > 110, then replace it with median
+trip_data$birth.year = ifelse(trip_data$birth.year < 1910, median(trip_data$birth.year), trip_data$birth.year)
+
+# check refined birth year
+summary(trip_data$birth.year)
+
+#6. user type
+summary(trip_data$usertype)
+
+```
+
+
