@@ -29,5 +29,34 @@ summary(stat_info)
 boxplot(capacity ~ region_id, data= stat_info, main="Capacity by region", xlab="Region id", ylab="Capacity" )
 
 hist(stat_info$capacity)
+
+
+```
+
+## Geographical analysis
+
+```{r}
+
+library("ggplot2")
+theme_set(theme_bw())
+library("sf")
+
+library("rnaturalearth")
+library("rnaturalearthdata")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+
+sites <- data.frame(longitude = stat_info$lon, latitude = stat_info$lat)
+
+ggplot(data = world) +
+    geom_sf() +
+    geom_point(data = sites, aes(x = longitude, y = latitude), size = 0.5, 
+        shape = 23, fill = "darkred") +
+    coord_sf(xlim = c(-74.1, -73.8), ylim = c(40.5, 40.9), expand = FALSE)
+
+
+
 ```
 
