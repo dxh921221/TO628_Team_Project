@@ -1,0 +1,40 @@
+---
+title: "Data_reorganization"
+author: "Priti"
+date: "4/15/2020"
+output: html_document
+---
+
+## Read 5% train data
+
+```{r}
+traindata <- read.csv("bike_weather_train_5perc.csv")
+str(traindata)
+summary(traindata)
+
+```
+
+## Re-organize to count frequency of use per day of year
+
+```{r}
+
+library(plyr)
+daily_study <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+#daily_study$Ave.Wind.Speed <- traindata$Ave.Wind.Speed[match(traindata$start_year,daily_study$start_year)]
+str(daily_study)
+
+
+```
+
+## Re-organize to count frequency of use per station
+
+```{r}
+
+library(plyr)
+daily_study <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+#daily_study$Ave.Wind.Speed <- traindata$Ave.Wind.Speed[match(traindata$start_year,daily_study$start_year)]
+str(daily_study)
+
+
+```
+
