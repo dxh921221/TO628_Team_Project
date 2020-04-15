@@ -1,0 +1,76 @@
+---
+title: "capacity_study"
+author: "Priti"
+date: "4/14/2020"
+output: html_document
+---
+
+
+## Data check
+
+
+
+```{r}
+stat_info <- read.csv("station_information.csv")
+str(stat_info)
+summary(stat_info)
+
+
+```
+
+
+## Data analysis
+
+```{r}
+ plot(x=stat_info$station_id, y=stat_info$capacity, main="Capacity per station", xlab="Station id",  ylab="Capacity")
+ plot(x=stat_info$region_id, y=stat_info$capacity, main="Capacity per region", xlab="Region id",  ylab="Capacity")
+ 
+
+boxplot(capacity ~ region_id, data= stat_info, main="Capacity by region", xlab="Region id", ylab="Capacity" )
+
+hist(stat_info$capacity)
+
+
+```
+
+## Geographical analysis
+
+```{r}
+
+library("ggplot2")
+theme_set(theme_bw())
+library("sf")
+
+library("rnaturalearth")
+library("rnaturalearthdata")
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+
+sites <- data.frame(longitude = stat_info$lon, latitude = stat_info$lat)
+
+ggplot(data = world) +
+    geom_sf() +
+    geom_point(data = sites, aes(x = longitude, y = latitude), size = 0.5, 
+        shape = 23, fill = "darkred") +
+    coord_sf(xlim = c(-74.1, -73.8), ylim = c(40.5, 40.9), expand = FALSE)
+
+
+
+```
+
+## Append capacity data with 2019traindata.csv
+
+```{r}
+
+biketraindata <- read.csv("2019traindata.csv")
+biketraindata$capacity <- stat_info$capacity[match(biketraindata$start.station.id , stat_info$station_id)]
+str(biketraindata)
+summary(biketraindata)
+#write.csv(biketraindata,"2019traindata_capacity.csv")
+
+
+```
+
+

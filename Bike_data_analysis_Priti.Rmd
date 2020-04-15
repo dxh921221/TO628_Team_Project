@@ -1,0 +1,62 @@
+---
+title: "Bike_weather_analysis"
+author: "XXX"
+date: "4/14/2020"
+output: html_document
+---
+
+# Read data
+
+```{r}
+
+traindata <- read.csv("traindata_2019.csv")
+str(traindata)
+summary(traindata)
+
+```
+
+
+
+# Linear Model to study trip-duration based on weather
+
+```{r}
+
+#Linear model
+
+durationmodel <- lm(tripduration ~ start.station.id + end.station.id + Ave.Wind.Speed + TMIN...C. + TMAX...C.  + PRCP..mm. + SNOW..mm., data = traindata)
+summary(durationmodel)
+
+
+```
+
+# Predict demand for each station
+
+```{r}
+# Make matrix with number of bikes per day
+
+library(plyr)
+counts <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day ),nrow)
+counts
+str(counts)
+
+```
+
+
+# Neural network
+
+```{r}
+
+
+normalize <- function(x) { 
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+#data_norm <- as.data.frame(lapply(traindata, normalize))
+#summary(data_norm$tripduration)
+
+
+
+
+
+```
+
