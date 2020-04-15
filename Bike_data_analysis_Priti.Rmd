@@ -2,7 +2,16 @@
 title: "Bike_weather_analysis"
 author: "XXX"
 date: "4/14/2020"
-output: html_document
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 ---
 
 # Read data
@@ -35,21 +44,34 @@ summary(durationmodel)
 # Make matrix with number of bikes per day
 
 library(plyr)
-counts <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day ),nrow)
-counts
-str(counts)
+daily_study <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.,traindata$start.station.id  ),nrow)
+#daily_study$Ave.Wind.Speed <- traindata$Ave.Wind.Speed[match(traindata$start_year,daily_study$start_year)]
+str(daily_study)
+
 
 ```
 
+
+# Linear Model to study trip-duration based on weather
+
+```{r}
+
+#Linear model
+
+model1 <- lm(V1 ~ Ave.Wind.Speed + TMIN...C. + TMAX...C.  + PRCP..mm. + SNOW..mm. , data = daily_study)
+summary(model1)
+
+
+```
 
 # Neural network
 
 ```{r}
 
 
-normalize <- function(x) { 
-  return((x - min(x)) / (max(x) - min(x)))
-}
+#normalize <- function(x) { 
+#  return((x - min(x)) / (max(x) - min(x)))
+#}
 
 #data_norm <- as.data.frame(lapply(traindata, normalize))
 #summary(data_norm$tripduration)
