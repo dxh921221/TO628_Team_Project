@@ -1,0 +1,101 @@
+---
+title: "Data_reorganization"
+author: "Priti"
+date: "4/15/2020"
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+## Read 5% train data
+
+```{r}
+
+traindata <- read.csv("bike_weather_train_5perc.csv")
+traindata$start.station.id <- as.integer(traindata$start.station.id)
+traindata$end.station.id <- as.integer(traindata$end.station.id)
+str(traindata)
+summary(traindata)
+
+```
+
+## Table with per day
+
+```{r}
+
+library(plyr)
+daily_study <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+
+str(daily_study)
+
+
+```
+
+## Table with per start station
+
+```{r}
+
+library(plyr)
+study2 <- ddply(traindata,.(traindata$start.station.id),nrow)
+str(study2)
+
+
+```
+
+
+## Table with per end station
+
+```{r}
+
+library(plyr)
+study3 <- ddply(traindata,.(traindata$end.station.id),nrow)
+str(study3)
+
+
+```
+
+
+## Table with per day and per station
+
+```{r}
+
+library(plyr)
+daily_study_2 <- ddply(traindata,.(traindata$start.station.id, traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+
+str(daily_study_2)
+
+
+```
+
+# Linear Model to study trip-duration based on weather
+
+```{r}
+
+#Linear model
+
+model1 <- lm(V1 ~ .  , data = daily_study)
+summary(model1)
+
+
+```
+
+# Linear Model 
+
+```{r}
+
+#Linear model
+
+model2 <- lm(V1 ~ ., data = daily_study_2)
+summary(model2)
+
+
+```
+
+
