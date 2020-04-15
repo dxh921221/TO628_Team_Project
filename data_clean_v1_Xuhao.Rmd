@@ -139,10 +139,51 @@ outlier_tripduration_tr
 bike_train_b_ss_d <- bike_train_b_ss[which(bike_train_b_ss$tripduration <= outlier_tripduration_tr),]
 bike_test_b_ss_d <- bike_test_b_ss[which(bike_test_b_ss$tripduration <= outlier_tripduration_ts),]
 
+str(bike_train_b_ss_d)
+
+#eliminate rows with end date in 2020 to be more consistent with weather data the team is using 
+bike_train_b_ss_d <- subset(bike_train_b_ss_d, stop_year <= 2019)
+bike_test_b_ss_d <- subset(bike_test_b_ss_d, stop_year <= 2019)
+
+bike_train_b_ss_d$stop_year <- as.factor(bike_train_b_ss_d$stop_year)
+bike_test_b_ss_d$stop_year <- as.factor(bike_test_b_ss_d$stop_year)
+
+#convert data types from int to factors for columns such as year, month, etc.
+bike_train_b_ss_d$start_year <- as.factor(bike_train_b_ss_d$start_year)
+bike_train_b_ss_d$start_mth <- as.factor(bike_train_b_ss_d$start_mth)
+bike_train_b_ss_d$start_day <- as.factor(bike_train_b_ss_d$start_day)
+bike_train_b_ss_d$start_hr <- as.factor(bike_train_b_ss_d$start_hr)
+bike_train_b_ss_d$start_min <- as.factor(bike_train_b_ss_d$start_min)
+
+bike_train_b_ss_d$stop_year <- as.factor(bike_train_b_ss_d$stop_year)
+bike_train_b_ss_d$stop_mth <- as.factor(bike_train_b_ss_d$stop_mth)
+bike_train_b_ss_d$stop_day <- as.factor(bike_train_b_ss_d$stop_day)
+bike_train_b_ss_d$stop_hr <- as.factor(bike_train_b_ss_d$stop_hr)
+bike_train_b_ss_d$stop_min <- as.factor(bike_train_b_ss_d$stop_min)
+
+bike_test_b_ss_d$start_year <- as.factor(bike_test_b_ss_d$start_year)
+bike_test_b_ss_d$start_mth <- as.factor(bike_test_b_ss_d$start_mth)
+bike_test_b_ss_d$start_day <- as.factor(bike_test_b_ss_d$start_day)
+bike_test_b_ss_d$start_hr <- as.factor(bike_test_b_ss_d$start_hr)
+bike_test_b_ss_d$start_min <- as.factor(bike_test_b_ss_d$start_min)
+
+bike_test_b_ss_d$stop_year <- as.factor(bike_test_b_ss_d$stop_year)
+bike_test_b_ss_d$stop_mth <- as.factor(bike_test_b_ss_d$stop_mth)
+bike_test_b_ss_d$stop_day <- as.factor(bike_test_b_ss_d$stop_day)
+bike_test_b_ss_d$stop_hr <- as.factor(bike_test_b_ss_d$stop_hr)
+bike_test_b_ss_d$stop_min <- as.factor(bike_test_b_ss_d$stop_min)
+
+str(bike_train_b_ss_d)
+str(bike_test_b_ss_d)
+
 #write into csv file
 write.csv(bike_train_b_ss_d,"D:\\School\\Master Program - IOE\\Winter 2020\\Team project\\bike_weather_train_clean.csv")
 write.csv(bike_test_b_ss_d,"D:\\School\\Master Program - IOE\\Winter 2020\\Team project\\bike_weather_test_clean.csv")
 
+#read the new data set and check if everything looks fine to further analysis
+train_clean <- read.csv("bike_weather_train_clean.csv")
+str(train_clean)
+summary(train_clean)
 
 ```
 
