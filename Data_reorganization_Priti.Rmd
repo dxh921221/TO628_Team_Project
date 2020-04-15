@@ -19,6 +19,8 @@ output:
 ```{r}
 
 traindata <- read.csv("bike_weather_train_5perc.csv")
+traindata$start.station.id <- as.integer(traindata$start.station.id)
+traindata$end.station.id <- as.integer(traindata$end.station.id)
 str(traindata)
 summary(traindata)
 
@@ -95,4 +97,5 @@ summary(model2)
 
 
 ```
+
 
