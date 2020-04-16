@@ -314,7 +314,20 @@ model3 <- lm(avg_birth_year_start ~ avg_wind_speed + TMIN, data = daily_study)
 summary(model3)
 
 ```
+## Logistic Regression Model 4: Total frequency start
 
+```{r}
+#Logistic regression model
+
+#library(mlogit)
+#model4 = glm(total_frequency_start ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW , data = daily_study)
+#model4 = mlogit(total_frequency_start ~ TMAX + PRCP, data = daily_study)
+#summary(model4)
+
+## CIs using standard errors
+#confint.default(model4)
+
+```
 
 
 # Organize Data Again
@@ -435,5 +448,24 @@ mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_pre
 # mean absolute percentage deviation
 min_max_accuracy
 mape
+
+```
+
+## Model 4
+
+```{r}
+#Logistic regression
+
+#usagePred <- predict(model4, newdata = daily_test, type = "response")
+#head(usagePred)
+
+
+#usagePred <- ifelse(usagePred > 0.5,1,0)
+
+#misClasificError <- mean(usagePred != daily_test$total_frequency_start)
+#print(paste('Accuracy',1-misClasificError))
+
+
+
 
 ```
