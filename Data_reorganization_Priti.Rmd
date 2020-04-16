@@ -98,4 +98,18 @@ summary(model2)
 
 ```
 
+```{r}
+
+traindata2 <- traindata
+traindata2$starttime <- NULL
+traindata2$stoptime <- NULL
+traindata2$Date <- NULL
+traindata2$usertype <- NULL
+traindata2$start.station.name <- NULL
+traindata2$end.station.name <- NULL
+str(traindata2)
+daily_study3 <- aggregate(traindata2,by=list(traindata$start_day, traindata$start_mth),FUN=mean)
+str(daily_study3)
+
+```
 
