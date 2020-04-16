@@ -31,7 +31,7 @@ summary(traindata)
 ```{r}
 
 library(plyr)
-daily_study <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+daily_study <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),c(mean(traindata$tripduration),nrow))
 
 str(daily_study)
 
