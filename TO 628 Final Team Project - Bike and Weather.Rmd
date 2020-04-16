@@ -285,21 +285,24 @@ head(daily_study)
 
 # Modeling
 
-## Linear Model to study total frequency of usage based on weather
+## Linear Model 1: Total frequency start 
 
 ```{r}
 #Linear model
-model1 <- lm(total_frequency_start ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW , data = daily_study)
+#model1 <- lm(total_frequency_start ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW , data = daily_study)
+model1 <- lm(total_frequency_start ~  TMAX + PRCP, data = daily_study)
 summary(model1)
 
 ```
 
-## Linear Model 2 
+## Linear Model 2: Trip duration
 
 ```{r}
 #Linear model
-#model2 <- lm(V1 ~ ., data = daily_study_2)
-#summary(model2)
+#model2 <- lm(avg_trip_duration_start ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW , data = daily_study)
+model2 <- lm(avg_trip_duration_start ~ TMAX + PRCP , data = daily_study)
+summary(model2)
+
 ```
 
 
@@ -343,7 +346,7 @@ summary(model1)
 
 ```
 
-# Data Preparation for Testing
+# Data Preparation for 5% Testing
 
 ## Table with per day
 
@@ -366,12 +369,27 @@ daily_test$total_frequency_stop = daily_test_stop$total_frequency_stop
 head(daily_test)
 
 ```
-# Test
+# Test 5% data
 
 ```{r}
 #Linear regression
 
 usagePred <- predict(model1, daily_test) 
+
+actuals_preds <- data.frame(cbind(actuals=daily_test$total_frequency_start, predicteds=usagePred))  # make actuals_predicteds dataframe
+correlation_accuracy <- cor(actuals_preds)  
+head(actuals_preds)
+correlation_accuracy
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
+# min_max accuracy
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+# mean absolute percentage deviation
+min_max_accuracy
+mape
+
+```
+```{r}
+
 
 ```
 
