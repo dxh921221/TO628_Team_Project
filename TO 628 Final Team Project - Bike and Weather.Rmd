@@ -1,0 +1,352 @@
+
+---
+title: "TO 628 Final Team Project"
+author: "Yongsoo Shin"
+date: "Due on April 20, 2020"
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+# Class Topics
+Topics learned so far:
+
+  1. Linear Regression
+  2. Logistic Regression
+  3. KNN
+  4. ANN
+  5. SVM
+  6. Decision Trees
+  7. Random Forest
+
+# Read Me
+This document serves as a subsidary document to a group project for which city bike data in NYC is used. The purpose of this document is to share analysis of the influence of weather to the bike usage.
+
+Here, city bike data from 2019 will be used for the analysis. Specifically, 5% of the entire 2019 data was extracted, and the extracted data was further separated into test (20%) and train (80%). Particularily, the train data will be used to model the usage of the entire year per month, and test data will be used to assess the accuracy of the chosen model with the best fit.
+
+Ultimately, the findings will be used to identify the relationship between weather and bike usage and predict the bike usage based on chosen parameters (e.g. precipitation amount). 
+
+# Dataset Explanation
+  - City bike data in NYC
+  - Each dataset is comprised of 1 month trip data
+    - Data from 12 months of 2019 have been combined
+    - The 5% of combined dataset has been divided into train (80%) and test (20%) datasets.
+  - Variables (City bike):
+    - trip duration (sec)
+    - start time (year, month, day, time)
+    - stop time (year, month, day, time)
+    - start station (id, lat/long)
+    - end station (id, lat/long)
+    - bike id
+    - user type
+      - customer (24 hr vs 3 day)
+      - subscriber (annual)
+    - birth year
+    - gender (0, 1, 2 = unknown, male, female)
+  - Variables (Weather):
+    - TMIN (minimum temperature in C)
+    - TMAX (maximum temperature in C)
+    - Average wind speed
+    - PRCP (mm)
+    - SNOW (mm)
+
+# Load Datasets
+```{r}
+#load train dataset
+traindata = read.csv("bike_weather_train_clean.csv")
+
+#load test dataset
+testdata = read.csv("bike_weather_test_clean.csv")
+
+#load data - station information
+#station_info = read.csv("station_information.csv")
+
+```
+
+# Join Station Info and Train/Test data
+Station Info is retrieved from the website directly, providing capacity of each station
+```{r}
+
+#explore and compare station information
+#colnames(station_info)
+#length(unique(station_info$station_id))
+#length(unique(traindata$start.station.id))
+
+#data of interest: station_id and capacity
+#traindata$start.station.capacity = NA #initialize
+#traindata$end.station.capacity = NA #initialize
+#testdata$start.station.capacity = NA #initialize
+#testdata$end.station.capacity = NA #initialize
+#traindata_start_station_id_with_unknown_capacity = 0 #initialize
+#traindata_end_station_id_with_unknown_capacity = 0 #initialize
+#testdata_start_station_id_with_unknown_capacity = 0 #initialize
+#testdata_end_station_id_with_unknown_capacity = 0 #initialize
+
+```
+
+```{r results='hide', warning=FALSE}
+
+#for (i in 1:nrow(station_info))
+#{
+#   train_rows_with_start_station_id = which(traindata$start.station.id == station_info$station_id[i])
+#   traindata$start.station.capacity[train_rows_with_start_station_id] = station_info$station_id[i]
+#   test_rows_with_start_station_id = which(testdata$start.station.id == station_info$station_id[i])
+#   testdata$start.station.capacity[test_rows_with_start_station_id] = station_info$station_id[i]
+#   
+#   train_rows_with_end_station_id = which(traindata$end.station.id == station_info$station_id[i])
+#   traindata$end.station.capacity[train_rows_with_end_station_id] = station_info$station_id[i]
+#   test_rows_with_end_station_id = which(testdata$end.station.id == station_info$station_id[i])
+#   testdata$end.station.capacity[test_rows_with_end_station_id] = station_info$station_id[i]
+#   
+#   if (length(train_rows_with_start_station_id) == 0)
+#   {
+#     if (traindata_start_station_id_with_unknown_capacity == 0)
+#     {
+#       traindata_start_station_id_with_unknown_capacity = station_info$station_id[i]
+#     }
+#     else if (traindata_start_station_id_with_unknown_capacity != 0)
+#     {
+#       traindata_start_station_id_with_unknown_capacity[length(traindata_start_station_id_with_unknown_capacity)+1] = station_info$station_id[i] 
+#     }
+#   }
+#   
+#   if (length(train_rows_with_end_station_id) == 0)
+#   {
+#     if (traindata_end_station_id_with_unknown_capacity == 0)
+#     {
+#       traindata_end_station_id_with_unknown_capacity = station_info$station_id[i]
+#     }
+#     else if (traindata_end_station_id_with_unknown_capacity != 0)
+#     {
+#       traindata_end_station_id_with_unknown_capacity[length(traindata_end_station_id_with_unknown_capacity)+1] = station_info$station_id[i] 
+#     }
+#   }
+#   
+#   if (length(test_rows_with_start_station_id) == 0)
+# {
+#   if (testdata_start_station_id_with_unknown_capacity == 0)
+#   {
+#     testdata_start_station_id_with_unknown_capacity = station_info$station_id[i]
+#   }
+#   else if (testdata_start_station_id_with_unknown_capacity != 0)
+#   {
+#     testdata_start_station_id_with_unknown_capacity[length(testdata_start_station_id_with_unknown_capacity)+1] = station_info$station_id[i] 
+#   }
+# }
+# 
+# if (length(test_rows_with_end_station_id) == 0)
+# {
+#   if (testdata_end_station_id_with_unknown_capacity == 0)
+#   {
+#     testdata_end_station_id_with_unknown_capacity = station_info$station_id[i]
+#   }
+#   else if (testdata_end_station_id_with_unknown_capacity != 0)
+#   {
+#     testdata_end_station_id_with_unknown_capacity[length(testdata_end_station_id_with_unknown_capacity)+1] = station_info$station_id[i] 
+#   }
+# }
+#   
+# }
+# 
+
+```
+
+# Clean up Datasets
+Ensure that no additional clean up is needed after train and test datasets are extracted from the entire 2019 usage.
+```{r}
+
+#train dataset
+traindata$X.1 = NULL
+traindata$X = NULL
+traindata$start_year = NULL
+traindata$starttime = NULL
+traindata$stop_year = NULL
+traindata$stoptime = NULL
+traindata$stoptime = NULL
+traindata$Date = NULL
+traindata$start.station.id = as.integer(traindata$start.station.id)
+traindata$end.station.id = as.integer(traindata$end.station.id)
+colnames(traindata)
+str(traindata)
+summary(traindata)
+
+
+#test dataset
+testdata$X.1 = NULL
+testdata$X = NULL
+testdata$start_year = NULL
+testdata$starttime = NULL
+testdata$stop_year = NULL
+testdata$stoptime = NULL
+testdata$stoptime = NULL
+testdata$Date = NULL
+testdata$start.station.id = as.integer(testdata$start.station.id)
+testdata$end.station.id = as.integer(testdata$end.station.id)
+colnames(testdata)
+str(testdata)
+summary(testdata)
+
+```
+
+# Further Data Exploration
+```{r}
+
+#1. trip duration
+boxplot(traindata$tripduration, main = "trip duration (sec)")
+hist(traindata$tripduration, main = "trip duration (sec)")
+
+#2. start/end station latitude/longitude
+plot(traindata$start.station.latitude, traindata$start.station.longitude, main = "Distribution of Station Location")
+summary(traindata$start.station.latitude)
+summary(traindata$start.station.longitude)
+
+#3. how many bikes are there?
+length(unique(traindata$bikeid))
+
+#4. how many unknown genders are there?
+summary(factor(traindata$gender))
+
+#5. birth year
+boxplot(traindata$birth.year)
+hist(traindata$birth.year)
+
+#6. user type
+summary(traindata$usertype)
+
+#7. how many stations are known for station capacity
+#summary(traindata$start.station.capacity)
+#length(traindata_start_station_id_with_unknown_capacity)/length(unique(traindata$start.station.id))
+#summary(traindata$end.station.capacity)
+#length(traindata_end_station_id_with_unknown_capacity)/length(unique(traindata$end.station.id))
+```
+
+# Data Preparation for Modeling
+
+## Table with per day
+
+```{r}
+
+daily_study_start <- ddply(traindata,.(traindata$start_mth,traindata$start_day, Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$birth.year),function(x) mean(x$tripduration), nrow))
+colnames(daily_study_start) = c("start_month","start_day","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_birth_year_start","avg_trip_duration_start","total_frequency_start")
+
+daily_study_stop <- ddply(traindata,.(traindata$stop_mth,traindata$stop_day), c(function(x) mean(x$birth.year),function(x) mean(x$tripduration), nrow))
+colnames(daily_study_stop) = c("stop_month","stop_day","avg_birth_year_stop","avg_trip_duration_stop","total_frequency_stop")
+
+daily_study = daily_study_start
+daily_study$stop_month = daily_study$start_month
+daily_study$stop_day = daily_study$start_day
+daily_study$avg_birth_year_stop = daily_study_stop$avg_birth_year_stop
+daily_study$avg_trip_duration_stop = daily_study_stop$avg_trip_duration_stop
+daily_study$total_frequency_stop = daily_study_stop$total_frequency_stop
+
+head(daily_study)
+
+```
+
+```{r}
+#library(plyr)
+#daily_study <- ddply(traindata,.(traindata$start_mth,traindata$start_day,traindata$birth.year , Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+#str(daily_study)
+```
+
+## Table with per start station
+
+```{r}
+#library(plyr)
+#study2 <- ddply(traindata,.(traindata$start.station.id),nrow)
+#str(study2)
+```
+
+
+## Table with per end station
+
+```{r}
+#library(plyr)
+#study3 <- ddply(traindata,.(traindata$end.station.id),nrow)
+#str(study3)
+```
+
+
+## Table with per day and per station
+
+```{r}
+#library(plyr)
+#daily_study_2 <- ddply(traindata,.(traindata$start.station.id,traindata$start_mth,traindata$start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)
+#str(daily_study_2)
+```
+
+# Modeling
+
+## Linear Model to study trip-duration based on weather
+
+```{r}
+#Linear model
+#model1 <- lm(V1 ~ .  , data = daily_study)
+#summary(model1)
+```
+
+## Linear Model 
+
+```{r}
+#Linear model
+#model2 <- lm(V1 ~ ., data = daily_study_2)
+#summary(model2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+# Organize Data Again
+```{r}
+
+#install.packages("plyr")
+#library("plyr")
+
+#entire_2019_refined_per_station = ddply(traindata,. (traindata$start_year, traindata$start_mth,  traindata$start.station.id, traindata$tripduration, traindata$usertype, traindata$birth.year, traindata$TMIN...C., traindata$TMAX...C., traindata$Ave.Wind.Speed, traindata$PRCP..mm., traindata$SNOW..mm. ), nrow)
+
+#entire_2019_refined_per_station = ddply(traindata,. (traindata$start_year, traindata$start_mth, traindata$start_day, traindata$start.station.id, traindata$tripduration, traindata$usertype, traindata$birth.year, traindata$TMIN...C., traindata$TMAX...C., traindata$Ave.Wind.Speed, traindata$PRCP..mm., traindata$SNOW..mm. ), nrow)
+
+#rename columns
+#colnames(entire_2019_refined_per_day) = c("start_year","start_month","start_day","TMIN_C","TMAX_C","WindSpeed","PRCP_mm","SNOW_mm","Freq")
+#colnames(entire_2019_refined_per_station) = c("start_year","start_month","start_day","start_station","TMIN_C","TMAX_C","WindSpeed","PRCP_mm","SNOW_mm","Freq")
+
+```
+
+# Model
+
+  1. Linear Regression
+  2. Logistic Regression
+  3. KNN
+  4. ANN
+  5. SVM
+  6. Decision Trees
+  7. Random Forest
+
+```{r}
+#linear regression
+#lm_per_station = lm(Freq ~ ., data = entire_2019_refined_per_station)
+#summary(lm_per_station)
+
+#logistic regression
+#logis_per_station = glm(Freq ~ ., data = entire_2019_refined_per_station)
+#summary(logis_per_station)
+
+```
+
+
+
