@@ -305,7 +305,15 @@ summary(model2)
 
 ```
 
+## Linear Model 3: Birth year
 
+```{r}
+#Linear model
+#model3 <- lm(avg_birth_year_start ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW , data = daily_study)
+model3 <- lm(avg_birth_year_start ~ avg_wind_speed + TMIN, data = daily_study)
+summary(model3)
+
+```
 
 
 
@@ -371,6 +379,7 @@ head(daily_test)
 ```
 # Test 5% data
 
+## Model 1
 ```{r}
 #Linear regression
 
@@ -388,9 +397,43 @@ min_max_accuracy
 mape
 
 ```
-```{r}
 
+## Model 2
+
+```{r}
+#Linear regression
+
+tripPred <- predict(model2, daily_test) 
+
+actuals_preds <- data.frame(cbind(actuals=daily_test$avg_trip_duration_start, predicteds=tripPred))  # make actuals_predicteds dataframe
+correlation_accuracy <- cor(actuals_preds)  
+head(actuals_preds)
+correlation_accuracy
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
+# min_max accuracy
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+# mean absolute percentage deviation
+min_max_accuracy
+mape
 
 ```
 
+## Model 3
 
+```{r}
+#Linear regression
+
+agePred <- predict(model3, daily_test) 
+
+actuals_preds <- data.frame(cbind(actuals=daily_test$avg_birth_year_start, predicteds=agePred))  # make actuals_predicteds dataframe
+correlation_accuracy <- cor(actuals_preds)  
+head(actuals_preds)
+correlation_accuracy
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
+# min_max accuracy
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+# mean absolute percentage deviation
+min_max_accuracy
+mape
+
+```
