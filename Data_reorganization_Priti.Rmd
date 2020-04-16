@@ -14,7 +14,7 @@ output:
       smooth_scroll: true
 ---
 
-## Read 5% train data
+# Read 5% train data
 
 ```{r}
 
@@ -26,7 +26,7 @@ summary(traindata)
 
 ```
 
-## Table with per day
+# Table with per day
 
 ```{r}
 
@@ -38,7 +38,7 @@ str(daily_study)
 
 ```
 
-## Table with per start station
+# Table with per start station
 
 ```{r}
 
@@ -62,7 +62,7 @@ str(study3)
 ```
 
 
-## Table with per day and per station
+# Table with per day and per station
 
 ```{r}
 
@@ -74,7 +74,7 @@ str(daily_study_2)
 
 ```
 
-# Linear Model to study trip-duration based on weather
+# Linear Model to study frequency of usage based on weather
 
 ```{r}
 
@@ -86,7 +86,7 @@ summary(model1)
 
 ```
 
-# Linear Model 
+# Linear Model 2
 
 ```{r}
 
@@ -98,6 +98,7 @@ summary(model2)
 
 ```
 
+# Trial
 ```{r}
 
 traindata2 <- traindata
@@ -107,7 +108,7 @@ traindata2$Date <- NULL
 traindata2$usertype <- NULL
 traindata2$start.station.name <- NULL
 traindata2$end.station.name <- NULL
-str(traindata2)
+
 daily_study3 <- aggregate(traindata2,by=list(traindata$start_day, traindata$start_mth),FUN=mean)
 str(daily_study3)
 
