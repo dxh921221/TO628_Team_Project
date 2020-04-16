@@ -232,6 +232,7 @@ summary(traindata$usertype)
 ## Table with per day
 
 ```{r}
+library(plyr)
 
 daily_study_start <- ddply(traindata,.(traindata$start_mth,traindata$start_day, Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$birth.year),function(x) mean(x$tripduration), nrow))
 colnames(daily_study_start) = c("start_month","start_day","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_birth_year_start","avg_trip_duration_start","total_frequency_start")
@@ -284,28 +285,22 @@ head(daily_study)
 
 # Modeling
 
-## Linear Model to study trip-duration based on weather
+## Linear Model to study total frequency of usage based on weather
 
 ```{r}
 #Linear model
-#model1 <- lm(V1 ~ .  , data = daily_study)
-#summary(model1)
+model1 <- lm(total_frequency_start ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW , data = daily_study)
+summary(model1)
+
 ```
 
-## Linear Model 
+## Linear Model 2 
 
 ```{r}
 #Linear model
 #model2 <- lm(V1 ~ ., data = daily_study_2)
 #summary(model2)
 ```
-
-
-
-
-
-
-
 
 
 
@@ -348,5 +343,36 @@ head(daily_study)
 
 ```
 
+# Data Preparation for Testing
+
+## Table with per day
+
+```{r}
+library(plyr)
+
+daily_test_start <- ddply(testdata,.(testdata$start_mth,testdata$start_day, Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$birth.year),function(x) mean(x$tripduration), nrow))
+colnames(daily_test_start) = c("start_month","start_day","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_birth_year_start","avg_trip_duration_start","total_frequency_start")
+
+daily_test_stop <- ddply(testdata,.(testdata$stop_mth,testdata$stop_day), c(function(x) mean(x$birth.year),function(x) mean(x$tripduration), nrow))
+colnames(daily_test_stop) = c("stop_month","stop_day","avg_birth_year_stop","avg_trip_duration_stop","total_frequency_stop")
+
+daily_test = daily_test_start
+daily_test$stop_month = daily_test$start_month
+daily_test$stop_day = daily_test$start_day
+daily_test$avg_birth_year_stop = daily_test_stop$avg_birth_year_stop
+daily_test$avg_trip_duration_stop = daily_test_stop$avg_trip_duration_stop
+daily_test$total_frequency_stop = daily_test_stop$total_frequency_stop
+
+head(daily_test)
+
+```
+# Test
+
+```{r}
+#Linear regression
+
+usagePred <- predict(model1, daily_test) 
+
+```
 
 
