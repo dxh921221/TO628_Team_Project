@@ -1604,22 +1604,25 @@ div.tocify {
 
 <div id="read-5-train-data" class="section level2">
 <h2><span class="header-section-number">0.1</span> Read 5% train data</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">traindata &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;bike_weather_train_5perc.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">str</span>(traindata)</a></code></pre></div>
-<pre><code>## 'data.frame':    822067 obs. of  32 variables:
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">traindata &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;bike_weather_train_clean.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">traindata<span class="op">$</span>start.station.id &lt;-<span class="st"> </span><span class="kw">as.integer</span>(traindata<span class="op">$</span>start.station.id)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">traindata<span class="op">$</span>end.station.id &lt;-<span class="st"> </span><span class="kw">as.integer</span>(traindata<span class="op">$</span>end.station.id)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">str</span>(traindata)</a></code></pre></div>
+<pre><code>## 'data.frame':    815935 obs. of  33 variables:
+##  $ X.1                    : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ X                      : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ start_year             : int  2019 2019 2019 2019 2019 2019 2019 2019 2019 2019 ...
 ##  $ start_mth              : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ start_day              : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ tripduration           : int  1378 820 1287 474 192 1878 210 1074 610 795 ...
-##  $ starttime              : Factor w/ 822048 levels &quot;2019-01-01 00:26:42.2590&quot;,..: 258 180 735 715 574 109 452 347 687 612 ...
-##  $ stoptime               : Factor w/ 822051 levels &quot;2019-01-01 00:38:28.9710&quot;,..: 267 184 742 709 540 122 431 353 683 606 ...
-##  $ start.station.id       : Factor w/ 828 levels &quot;116&quot;,&quot;119&quot;,&quot;120&quot;,..: 749 792 89 397 199 200 778 784 206 88 ...
-##  $ start.station.name     : Factor w/ 928 levels &quot;1 Ave &amp; E 110 St&quot;,..: 5 536 190 578 873 875 373 837 292 636 ...
+##  $ starttime              : Factor w/ 815917 levels &quot;2019-01-01 00:26:42.2590&quot;,..: 257 179 734 714 573 109 451 346 686 611 ...
+##  $ stoptime               : Factor w/ 815920 levels &quot;2019-01-01 00:38:28.9710&quot;,..: 267 184 741 708 540 122 431 353 682 606 ...
+##  $ start.station.id       : int  749 792 89 397 199 200 778 784 206 88 ...
+##  $ start.station.name     : Factor w/ 831 levels &quot;1 Ave &amp; E 110 St&quot;,..: 5 491 184 523 784 786 348 751 269 570 ...
 ##  $ start.station.latitude : num  40.8 40.7 40.7 40.7 40.8 ...
 ##  $ start.station.longitude: num  -74 -74 -74 -74 -74 ...
-##  $ end.station.id         : Factor w/ 830 levels &quot;116&quot;,&quot;119&quot;,&quot;120&quot;,..: 260 499 370 424 729 214 796 720 808 713 ...
-##  $ end.station.name       : Factor w/ 928 levels &quot;1 Ave &amp; E 110 St&quot;,..: 447 171 298 365 871 881 2 474 865 898 ...
+##  $ end.station.id         : int  259 498 369 423 728 213 795 719 807 712 ...
+##  $ end.station.name       : Factor w/ 832 levels &quot;1 Ave &amp; E 110 St&quot;,..: 417 166 275 340 784 794 2 437 778 810 ...
 ##  $ end.station.latitude   : num  40.8 40.7 40.7 40.7 40.8 ...
 ##  $ end.station.longitude  : num  -73.9 -74 -74 -74 -74 ...
 ##  $ bikeid                 : int  21541 28895 34748 19480 34022 33848 25712 15782 31168 35252 ...
@@ -1640,85 +1643,85 @@ div.tocify {
 ##  $ PRCP..mm.              : num  1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 ...
 ##  $ SNOW..mm.              : num  0 0 0 0 0 0 0 0 0 0 ...</code></pre>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">summary</span>(traindata)</a></code></pre></div>
-<pre><code>##        X            start_year     start_mth        start_day    
-##  Min.   :     1   Min.   :2019   Min.   : 1.000   Min.   : 1.00  
-##  1st Qu.:205518   1st Qu.:2019   1st Qu.: 5.000   1st Qu.: 8.00  
-##  Median :411034   Median :2019   Median : 7.000   Median :15.00  
-##  Mean   :411034   Mean   :2019   Mean   : 6.859   Mean   :15.64  
-##  3rd Qu.:616550   3rd Qu.:2019   3rd Qu.: 9.000   3rd Qu.:23.00  
-##  Max.   :822067   Max.   :2019   Max.   :12.000   Max.   :31.00  
-##                                                                  
-##   tripduration                        starttime     
-##  Min.   :     61   2019-04-13 14:24:17.2870:     2  
-##  1st Qu.:    362   2019-05-17 08:27:18.8190:     2  
-##  Median :    615   2019-06-02 20:00:55.2400:     2  
-##  Mean   :    983   2019-06-26 09:30:49.0610:     2  
-##  3rd Qu.:   1078   2019-07-15 07:55:04.0350:     2  
-##  Max.   :3245687   2019-07-24 17:47:02.8820:     2  
-##                    (Other)                 :822055  
+<pre><code>##       X.1               X            start_year     start_mth     
+##  Min.   :     1   Min.   :     1   Min.   :2019   Min.   : 1.000  
+##  1st Qu.:204232   1st Qu.:204232   1st Qu.:2019   1st Qu.: 5.000  
+##  Median :408424   Median :408424   Median :2019   Median : 7.000  
+##  Mean   :408934   Mean   :408934   Mean   :2019   Mean   : 6.833  
+##  3rd Qu.:612818   3rd Qu.:612818   3rd Qu.:2019   3rd Qu.: 9.000  
+##  Max.   :822067   Max.   :822067   Max.   :2019   Max.   :12.000  
+##                                                                   
+##    start_day      tripduration                        starttime     
+##  Min.   : 1.00   Min.   :   61.0   2019-04-13 14:24:17.2870:     2  
+##  1st Qu.: 8.00   1st Qu.:  362.0   2019-05-17 08:27:18.8190:     2  
+##  Median :15.00   Median :  615.0   2019-06-26 09:30:49.0610:     2  
+##  Mean   :15.63   Mean   :  832.8   2019-07-15 07:55:04.0350:     2  
+##  3rd Qu.:23.00   3rd Qu.: 1076.0   2019-07-24 17:47:02.8820:     2  
+##  Max.   :31.00   Max.   :17862.0   2019-08-04 17:13:51.6350:     2  
+##                                    (Other)                 :815923  
 ##                      stoptime      start.station.id
-##  2019-03-22 17:21:09.8400:     2   519    :  6291  
-##  2019-03-26 08:57:17.1380:     2   497    :  4903  
-##  2019-03-28 18:25:45.1590:     2   3255   :  4823  
-##  2019-04-13 13:58:09.4020:     2   402    :  4549  
-##  2019-04-27 11:47:34.7250:     2   285    :  4533  
-##  2019-04-30 18:37:36.9630:     2   (Other):794202  
-##  (Other)                 :822055   NA's   :  2766  
+##  2019-03-22 17:21:09.8400:     2   Min.   :  1.0   
+##  2019-03-26 08:57:17.1380:     2   1st Qu.:190.0   
+##  2019-03-28 18:25:45.1590:     2   Median :434.0   
+##  2019-04-13 13:58:09.4020:     2   Mean   :442.8   
+##  2019-04-27 11:47:34.7250:     2   3rd Qu.:733.0   
+##  2019-04-30 18:37:36.9630:     2   Max.   :828.0   
+##  (Other)                 :815923                   
 ##              start.station.name start.station.latitude start.station.longitude
-##  Pershing Square North:  6291   Min.   :40.66          Min.   :-74.03         
-##  E 17 St &amp; Broadway   :  4903   1st Qu.:40.72          1st Qu.:-74.00         
-##  8 Ave &amp; W 31 St      :  4823   Median :40.74          Median :-73.99         
-##  Broadway &amp; E 22 St   :  4549   Mean   :40.74          Mean   :-73.98         
-##  Broadway &amp; E 14 St   :  4533   3rd Qu.:40.76          3rd Qu.:-73.97         
-##  W 21 St &amp; 6 Ave      :  4475   Max.   :40.86          Max.   :-73.88         
-##  (Other)              :792493                                                 
-##  end.station.id                end.station.name  end.station.latitude
-##  519    :  6141   Pershing Square North:  6141   Min.   :40.66       
-##  497    :  5075   E 17 St &amp; Broadway   :  5075   1st Qu.:40.72       
-##  402    :  4950   Broadway &amp; E 22 St   :  4950   Median :40.74       
-##  426    :  4671   West St &amp; Chambers St:  4671   Mean   :40.74       
-##  3255   :  4667   8 Ave &amp; W 31 St      :  4667   3rd Qu.:40.76       
-##  (Other):793704   Broadway &amp; E 14 St   :  4577   Max.   :40.86       
-##  NA's   :  2859   (Other)              :791986                       
+##  Pershing Square North:  6281   Min.   :40.66          Min.   :-74.03         
+##  E 17 St &amp; Broadway   :  4896   1st Qu.:40.72          1st Qu.:-74.00         
+##  8 Ave &amp; W 31 St      :  4806   Median :40.74          Median :-73.99         
+##  Broadway &amp; E 22 St   :  4526   Mean   :40.74          Mean   :-73.98         
+##  Broadway &amp; E 14 St   :  4522   3rd Qu.:40.76          3rd Qu.:-73.97         
+##  W 21 St &amp; 6 Ave      :  4461   Max.   :40.86          Max.   :-73.88         
+##  (Other)              :786443                                                 
+##  end.station.id               end.station.name  end.station.latitude
+##  Min.   :  1.0   Pershing Square North:  6120   Min.   :40.66       
+##  1st Qu.:189.0   E 17 St &amp; Broadway   :  5069   1st Qu.:40.72       
+##  Median :439.0   Broadway &amp; E 22 St   :  4931   Median :40.74       
+##  Mean   :444.5   West St &amp; Chambers St:  4662   Mean   :40.74       
+##  3rd Qu.:734.0   8 Ave &amp; W 31 St      :  4650   3rd Qu.:40.76       
+##  Max.   :829.0   Broadway &amp; E 14 St   :  4560   Max.   :40.86       
+##                  (Other)              :785943                       
 ##  end.station.longitude     bikeid            usertype        birth.year  
-##  Min.   :-74.04        Min.   :14529   Customer  :114816   Min.   :1857  
-##  1st Qu.:-74.00        1st Qu.:25358   Subscriber:707251   1st Qu.:1970  
-##  Median :-73.99        Median :30921                       Median :1983  
-##  Mean   :-73.98        Mean   :29679                       Mean   :1980  
-##  3rd Qu.:-73.97        3rd Qu.:35050                       3rd Qu.:1990  
+##  Min.   :-74.04        Min.   :14529   Customer  :113649   Min.   :1921  
+##  1st Qu.:-74.00        1st Qu.:25349   Subscriber:702286   1st Qu.:1970  
+##  Median :-73.99        Median :30910                       Median :1983  
+##  Mean   :-73.98        Mean   :29663                       Mean   :1980  
+##  3rd Qu.:-73.97        3rd Qu.:35038                       3rd Qu.:1990  
 ##  Max.   :-73.88        Max.   :42046                       Max.   :2003  
 ##                                                                          
 ##      gender         start_hr       start_min      stop_year       stop_mth     
 ##  Min.   :0.000   Min.   : 0.00   Min.   : 0.0   Min.   :2019   Min.   : 1.000  
 ##  1st Qu.:1.000   1st Qu.:10.00   1st Qu.:14.0   1st Qu.:2019   1st Qu.: 5.000  
 ##  Median :1.000   Median :14.00   Median :30.0   Median :2019   Median : 7.000  
-##  Mean   :1.166   Mean   :13.88   Mean   :29.5   Mean   :2019   Mean   : 6.859  
+##  Mean   :1.166   Mean   :13.88   Mean   :29.5   Mean   :2019   Mean   : 6.834  
 ##  3rd Qu.:1.000   3rd Qu.:18.00   3rd Qu.:44.0   3rd Qu.:2019   3rd Qu.: 9.000  
-##  Max.   :2.000   Max.   :23.00   Max.   :59.0   Max.   :2020   Max.   :12.000  
+##  Max.   :2.000   Max.   :23.00   Max.   :59.0   Max.   :2019   Max.   :12.000  
 ##                                                                                
 ##     stop_day        stop_hr         stop_min                      Date       
-##  Min.   : 1.00   Min.   : 0.00   Min.   : 0.00   2019-09-21T00:00:00:  3989  
-##  1st Qu.: 8.00   1st Qu.:10.00   1st Qu.:15.00   2019-09-25T00:00:00:  3825  
-##  Median :15.00   Median :15.00   Median :30.00   2019-09-17T00:00:00:  3777  
-##  Mean   :15.63   Mean   :14.03   Mean   :29.82   2019-09-24T00:00:00:  3685  
-##  3rd Qu.:23.00   3rd Qu.:18.00   3rd Qu.:45.00   2019-09-27T00:00:00:  3661  
-##  Max.   :31.00   Max.   :23.00   Max.   :59.00   2019-09-20T00:00:00:  3659  
-##                                                  (Other)            :799471  
-##    TMIN...C.        TMAX...C.    Ave.Wind.Speed    PRCP..mm.     
-##  Min.   :-16.60   Min.   :-9.9   Min.   :0.000   Min.   : 0.000  
-##  1st Qu.:  5.60   1st Qu.:13.9   1st Qu.:1.200   1st Qu.: 0.000  
-##  Median : 13.30   Median :21.7   Median :1.600   Median : 0.000  
-##  Mean   : 12.03   Mean   :20.1   Mean   :1.752   Mean   : 2.671  
-##  3rd Qu.: 19.40   3rd Qu.:27.2   3rd Qu.:2.300   3rd Qu.: 1.000  
-##  Max.   : 27.80   Max.   :35.0   Max.   :5.700   Max.   :46.500  
-##                                                                  
-##    SNOW..mm.      
-##  Min.   : 0.0000  
-##  1st Qu.: 0.0000  
-##  Median : 0.0000  
-##  Mean   : 0.0493  
-##  3rd Qu.: 0.0000  
-##  Max.   :10.2000  
+##  Min.   : 1.00   Min.   : 0.00   Min.   : 0.00   2019-09-21T00:00:00:  3935  
+##  1st Qu.: 8.00   1st Qu.:10.00   1st Qu.:15.00   2019-09-25T00:00:00:  3771  
+##  Median :15.00   Median :15.00   Median :30.00   2019-09-17T00:00:00:  3757  
+##  Mean   :15.63   Mean   :14.03   Mean   :29.82   2019-09-24T00:00:00:  3632  
+##  3rd Qu.:23.00   3rd Qu.:18.00   3rd Qu.:45.00   2019-09-11T00:00:00:  3631  
+##  Max.   :31.00   Max.   :23.00   Max.   :59.00   2019-09-20T00:00:00:  3628  
+##                                                  (Other)            :793581  
+##    TMIN...C.        TMAX...C.     Ave.Wind.Speed    PRCP..mm.     
+##  Min.   :-16.60   Min.   :-9.90   Min.   :0.000   Min.   : 0.000  
+##  1st Qu.:  5.60   1st Qu.:13.90   1st Qu.:1.200   1st Qu.: 0.000  
+##  Median : 13.30   Median :21.70   Median :1.600   Median : 0.000  
+##  Mean   : 12.07   Mean   :20.14   Mean   :1.747   Mean   : 2.672  
+##  3rd Qu.: 19.40   3rd Qu.:27.20   3rd Qu.:2.300   3rd Qu.: 1.000  
+##  Max.   : 27.80   Max.   :35.00   Max.   :5.700   Max.   :46.500  
+##                                                                   
+##    SNOW..mm.       
+##  Min.   : 0.00000  
+##  1st Qu.: 0.00000  
+##  Median : 0.00000  
+##  Mean   : 0.04926  
+##  3rd Qu.: 0.00000  
+##  Max.   :10.20000  
 ## </code></pre>
 </div>
 <div id="table-with-per-day" class="section level2">
@@ -1736,34 +1739,34 @@ div.tocify {
 ##  $ TMAX...C.           : num  14.4 4.4 6.7 8.3 8.3 9.4 1.1 7.2 7.2 1.1 ...
 ##  $ PRCP..mm.           : num  1.5 0 0 0 12.7 0 0 4.3 1.5 0 ...
 ##  $ SNOW..mm.           : num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ V1                  : int  922 1498 1659 1747 696 1284 1513 1609 1714 1517 ...</code></pre>
+##  $ V1                  : int  921 1494 1657 1747 696 1281 1512 1607 1714 1515 ...</code></pre>
 </div>
 <div id="table-with-per-start-station" class="section level2">
 <h2><span class="header-section-number">0.3</span> Table with per start station</h2>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">library</span>(plyr)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">study2 &lt;-<span class="st"> </span><span class="kw">ddply</span>(traindata,.(traindata<span class="op">$</span>start.station.id),nrow)</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="kw">str</span>(study2)</a></code></pre></div>
-<pre><code>## 'data.frame':    829 obs. of  2 variables:
-##  $ traindata$start.station.id: Factor w/ 828 levels &quot;116&quot;,&quot;119&quot;,&quot;120&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
-##  $ V1                        : int  1876 205 492 2577 2683 1002 454 1372 1465 3398 ...</code></pre>
+<pre><code>## 'data.frame':    828 obs. of  2 variables:
+##  $ traindata$start.station.id: int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ V1                        : int  1865 205 490 2563 2664 1000 452 1371 1462 3387 ...</code></pre>
 </div>
 <div id="table-with-per-end-station" class="section level2">
 <h2><span class="header-section-number">0.4</span> Table with per end station</h2>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">library</span>(plyr)</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2">study3 &lt;-<span class="st"> </span><span class="kw">ddply</span>(traindata,.(traindata<span class="op">$</span>end.station.id),nrow)</a>
 <a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw">str</span>(study3)</a></code></pre></div>
-<pre><code>## 'data.frame':    831 obs. of  2 variables:
-##  $ traindata$end.station.id: Factor w/ 830 levels &quot;116&quot;,&quot;119&quot;,&quot;120&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
-##  $ V1                      : int  2021 224 453 2539 2639 996 513 1302 1407 3440 ...</code></pre>
+<pre><code>## 'data.frame':    829 obs. of  2 variables:
+##  $ traindata$end.station.id: int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ V1                      : int  2008 223 452 2533 2625 994 509 1300 1403 3436 ...</code></pre>
 </div>
 <div id="table-with-per-day-and-per-station" class="section level2">
 <h2><span class="header-section-number">0.5</span> Table with per day and per station</h2>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">library</span>(plyr)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2">daily_study &lt;-<span class="st"> </span><span class="kw">ddply</span>(traindata,.(traindata<span class="op">$</span>start.station.id, traindata<span class="op">$</span>start_year,traindata<span class="op">$</span>start_mth,traindata<span class="op">$</span>start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">daily_study_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">ddply</span>(traindata,.(traindata<span class="op">$</span>start.station.id, traindata<span class="op">$</span>start_year,traindata<span class="op">$</span>start_mth,traindata<span class="op">$</span>start_day,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.),nrow)</a>
 <a class="sourceLine" id="cb11-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw">str</span>(daily_study)</a></code></pre></div>
-<pre><code>## 'data.frame':    208017 obs. of  10 variables:
-##  $ traindata$start.station.id: Factor w/ 828 levels &quot;116&quot;,&quot;119&quot;,&quot;120&quot;,..: 749 792 89 397 199 200 778 784 206 88 ...
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw">str</span>(daily_study_<span class="dv">2</span>)</a></code></pre></div>
+<pre><code>## 'data.frame':    207452 obs. of  10 variables:
+##  $ traindata$start.station.id: int  749 792 89 397 199 200 778 784 206 88 ...
 ##  $ traindata$start_year      : int  2019 2019 2019 2019 2019 2019 2019 2019 2019 2019 ...
 ##  $ traindata$start_mth       : int  1 1 1 1 1 1 1 1 1 1 ...
 ##  $ traindata$start_day       : int  1 1 1 1 1 1 1 1 1 1 ...
@@ -1773,6 +1776,71 @@ div.tocify {
 ##  $ PRCP..mm.                 : num  1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 1.5 ...
 ##  $ SNOW..mm.                 : num  0 0 0 0 0 0 0 0 0 0 ...
 ##  $ V1                        : int  2 4 1 7 6 5 5 2 9 2 ...</code></pre>
+</div>
+<div id="linear-model-to-study-trip-duration-based-on-weather" class="section level1">
+<h1><span class="header-section-number">1</span> Linear Model to study trip-duration based on weather</h1>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#Linear model</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">model1 &lt;-<span class="st"> </span><span class="kw">lm</span>(V1 <span class="op">~</span><span class="st"> </span>.  , <span class="dt">data =</span> daily_study)</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="kw">summary</span>(model1)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = V1 ~ ., data = daily_study)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1618.00  -237.08    59.39   267.36  1003.51 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            1299.006     95.279  13.634  &lt; 2e-16 ***
+## `traindata$start_year`       NA         NA      NA       NA    
+## `traindata$start_mth`     7.862      8.508   0.924   0.3561    
+## `traindata$start_day`    -5.607      2.630  -2.132   0.0337 *  
+## Ave.Wind.Speed           14.938     23.768   0.628   0.5301    
+## TMIN...C.                10.285      9.186   1.120   0.2636    
+## TMAX...C.                58.178      8.320   6.992 1.34e-11 ***
+## PRCP..mm.               -36.750      2.911 -12.624  &lt; 2e-16 ***
+## SNOW..mm.               -27.812     29.884  -0.931   0.3527    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 436.3 on 357 degrees of freedom
+## Multiple R-squared:  0.7517, Adjusted R-squared:  0.7468 
+## F-statistic: 154.4 on 7 and 357 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="linear-model" class="section level1">
+<h1><span class="header-section-number">2</span> Linear Model</h1>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co">#Linear model</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">model2 &lt;-<span class="st"> </span><span class="kw">lm</span>(V1 <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> daily_study_<span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw">summary</span>(model2)</a></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = V1 ~ ., data = daily_study_2)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -5.252 -2.309 -0.967  1.288 46.159 
+## 
+## Coefficients: (1 not defined because of singularities)
+##                                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                   1.786e+00  3.553e-02  50.279  &lt; 2e-16 ***
+## `traindata$start.station.id`  2.180e-03  3.062e-05  71.219  &lt; 2e-16 ***
+## `traindata$start_year`               NA         NA      NA       NA    
+## `traindata$start_mth`         1.951e-02  2.954e-03   6.604 4.00e-11 ***
+## `traindata$start_day`        -5.975e-03  8.897e-04  -6.716 1.87e-11 ***
+## Ave.Wind.Speed                2.444e-02  8.229e-03   2.970  0.00298 ** 
+## TMIN...C.                     7.304e-03  3.151e-03   2.318  0.02044 *  
+## TMAX...C.                     6.843e-02  2.855e-03  23.971  &lt; 2e-16 ***
+## PRCP..mm.                    -4.347e-02  1.042e-03 -41.704  &lt; 2e-16 ***
+## SNOW..mm.                    -5.150e-02  1.177e-02  -4.375 1.21e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.516 on 207443 degrees of freedom
+## Multiple R-squared:  0.07348,    Adjusted R-squared:  0.07344 
+## F-statistic:  2056 on 8 and 207443 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 
 
