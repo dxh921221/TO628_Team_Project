@@ -1,0 +1,78 @@
+---
+title: "TO 628 Data"
+author: "Brian Tsai"
+date: "4/17/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Merge Two Datasets
+```{r}
+# Reading Data
+train <- read.csv("bike_weather_train_clean.csv")
+test <- read.csv("bike_weather_test_clean.csv")
+
+# Fixing Datatype for Start & End Station ID
+test$start.station.id <- as.factor(test$start.station.id)
+test$end.station.id <- as.factor(test$end.station.id)
+
+
+# Merging Data
+data <- rbind(train, test)
+
+# Fixing Datatypes
+data$birth.year <- as.numeric(data$birth.year)
+```
+
+# Convert Date to Day# & Day of the Week
+```{r}
+# Day Count
+library(lubridate)
+data$day_count = yday(data$starttime)
+
+# Day of the Week
+data$day <- weekdays(as.Date(data$starttime))
+```
+
+# Create New Columns
+```{r}
+# Age Group 
+## Teenager: > 20, Adult: 20-44, Middle_Age: 45-64, Elderly: 64 > 
+data$age <- 2019 - data$birth.year
+data$age_group <- cut(data$age, breaks = c(0, 19, 44, 64, Inf), labels = c("Teenager", "Adult", "Middle Age", "Elderly"))
+
+# Travel Distance using Haversine
+## Values in m
+library(pracma)
+library(geosphere)
+library(dplyr)
+
+data <- data %>% mutate(Correct <- distHaversine(cbind(data$start.station.longitude, data$start.station.latitude), cbind(data$end.station.longitude, data$end.station.latitude)))
+colnames(data)[38] <- "distance"
+
+# Speed
+## Values in m/s
+data$speed <- data$distance / data$tripduration
+
+# Time Period of the Day
+data$time <- cut(data$start_hr, breaks = c(-Inf, 3, 11, 15, 19, Inf), labels = c("night", "morning", "afternoon", "evening", "night"))
+
+```
+
+# Split to Train & Test Data and Export
+```{r}
+# Split to Train & Test Data
+bike_train <- data[1:(0.8*nrow(data)),]
+bike_test <- data[(0.8*nrow(data)):nrow(data),]
+
+# Export to CSV Files 
+write.csv(bike_train,"/Users/brian/Downloads/628 Project/train_final.csv")
+write.csv(bike_test,"/Users/brian/Downloads/628 Project/test_final.csv")
+```
+
