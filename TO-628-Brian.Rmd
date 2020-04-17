@@ -1,0 +1,49 @@
+---
+title: "TO 628 Brian"
+author: "Brian"
+output: pdf_document
+---
+
+# Reading Data
+```{r}
+traindata <- read.csv("bike_weather_train_clean.csv")
+traindata$start.station.id <- as.integer(traindata$start.station.id)
+traindata$end.station.id <- as.integer(traindata$end.station.id)
+
+```
+
+# Setting Time Period
+```{r}
+traindata$time <- cut(traindata$start_hr, breaks = c(-Inf, 3, 11, 15, 19, Inf), labels = c("night", "morning", "afternoon", "evening", "night"))
+
+```
+
+# Table for Daily Usage
+```{r}
+library(plyr)
+daily <- ddply(traindata,.(traindata$start_year,traindata$start_mth,traindata$start_day,traindata$time,Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$tripduration), nrow))
+
+colnames(daily) = c("start_year","start_month","start_day","Time","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_trip_duration","Count")
+
+summary(daily)
+
+```
+
+# Linear Model - Predicting based on Weather and Time Period
+```{r}
+
+lm1 <- lm(Count ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW + Time, data = daily)
+summary(lm1)
+
+```
+
+# Linear Model 2 - Predicting Trip Duration Based on Weather and Time Period
+```{r}
+
+lm2 <- lm(avg_trip_duration ~ avg_wind_speed + TMIN + TMAX + PRCP + SNOW + Time, data = daily)
+summary(lm2)
+
+```
+
+
+
