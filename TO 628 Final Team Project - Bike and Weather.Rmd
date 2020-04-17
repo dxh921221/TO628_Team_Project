@@ -247,7 +247,7 @@ daily_study$avg_birth_year_stop = daily_study_stop$avg_birth_year_stop
 daily_study$avg_trip_duration_stop = daily_study_stop$avg_trip_duration_stop
 daily_study$total_frequency_stop = daily_study_stop$total_frequency_stop
 
-head(daily_study)
+str(daily_study)
 
 ```
 
@@ -328,7 +328,25 @@ summary(model3)
 #confint.default(model4)
 
 ```
+## KNN model
 
+```{r}
+
+```
+
+## Decision trees Model 5: Total frequency start
+
+```{r}
+#Decision tree
+
+daily_study$total_frequency_start <- as.factor(daily_study$total_frequency_start)
+library(C50)
+model5 <- C5.0(daily_study[-c(10 ,15)], daily_study$total_frequency_start)
+model5
+summary(model5)
+#plot(model5)
+
+```
 
 # Organize Data Again
 ```{r}
@@ -409,6 +427,10 @@ mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_pre
 min_max_accuracy
 mape
 
+plot(actuals_preds$actuals,actuals_preds$predicteds, main = "Actuals vs Predicted",
+     xlab = "Actuals" , ylab = "Predicted")
+abline(a = 0, b = 1)
+
 ```
 
 ## Model 2
@@ -428,6 +450,10 @@ mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_pre
 # mean absolute percentage deviation
 min_max_accuracy
 mape
+
+plot(actuals_preds$actuals,actuals_preds$predicteds, main = "Actuals vs Predicted",
+     xlab = "Actuals" , ylab = "Predicted")
+abline(a = 0, b = 1)
 
 ```
 
@@ -449,6 +475,12 @@ mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_pre
 min_max_accuracy
 mape
 
+plot(actuals_preds$actuals,actuals_preds$predicteds, main = "Actuals vs Predicted",
+     xlab = "Actuals" , ylab = "Predicted")
+abline(a = 0, b = 1)
+
+
+
 ```
 
 ## Model 4
@@ -468,4 +500,39 @@ mape
 
 
 
+```
+
+## Model 5
+
+```{r}
+# Decision trees
+
+## Step 4: Evaluating model performance ----
+# create a factor vector of predictions on test data
+usagePred<- predict(model5, daily_test)
+
+# cross tabulation of predicted versus actual classes
+#library(gmodels)
+#CrossTable(daily_test$total_frequency_start, usagePred,
+#           prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE,
+#           dnn = c('actual default', 'predicted default'))
+daily_test$total_frequency_start <- as.factor(daily_test$total_frequency_start)
+actuals_preds <- data.frame(cbind(actuals=daily_test$total_frequency_start, predicteds=usagePred))  # make actuals_predicteds dataframe
+correlation_accuracy <- cor(actuals_preds)  
+head(actuals_preds)
+min_max_accuracy <- mean(apply(actuals_preds, 1, min) / apply(actuals_preds, 1, max))  
+# min_max accuracy
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+# mean absolute percentage deviation
+min_max_accuracy
+mape
+
+plot(actuals_preds$actuals,actuals_preds$predicteds, main = "Actuals vs Predicted",
+     xlab = "Actuals" , ylab = "Predicted")
+abline(a = 0, b = 1)
+
+# How many times do we overpredict or underpredict?
+over_under_pred <- actuals_preds
+over_under_pred$over_pred <- ifelse(over_under_pred$actuals<over_under_pred$predicteds,1,0)
+hist(over_under_pred$over_pred)
 ```
