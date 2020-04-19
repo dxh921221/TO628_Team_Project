@@ -721,7 +721,7 @@ distance_model_comparison[6,] = c((length(distance_accuracy_rf)-sum(distance_acc
 ```
 
 ### Findings
-
+To be filled.
 ```{r}
 distance_model_comparison
 ```
