@@ -17,15 +17,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # Reading Data
 train <- read.csv("bike_weather_train_clean.csv")
 test <- read.csv("bike_weather_test_clean.csv")
-
 # Fixing Datatype for Start & End Station ID
 test$start.station.id <- as.factor(test$start.station.id)
 test$end.station.id <- as.factor(test$end.station.id)
-
-
 # Merging Data
 data <- rbind(train, test)
-
 # Fixing Datatypes
 data$birth.year <- as.numeric(data$birth.year)
 ```
@@ -35,7 +31,6 @@ data$birth.year <- as.numeric(data$birth.year)
 # Day Count
 library(lubridate)
 data$day_count = yday(data$starttime)
-
 # Day of the Week
 data$day <- weekdays(as.Date(data$starttime))
 ```
@@ -46,20 +41,16 @@ data$day <- weekdays(as.Date(data$starttime))
 ## Teenager: > 20, Adult: 20-44, Middle_Age: 45-64, Elderly: 64 > 
 data$age <- 2019 - data$birth.year
 data$age_group <- cut(data$age, breaks = c(0, 19, 44, 64, Inf), labels = c("Teenager", "Adult", "Middle Age", "Elderly"))
-
 # Travel Distance using Haversine
 ## Values in m
 library(pracma)
 library(geosphere)
 library(dplyr)
-
 data <- data %>% mutate(Correct <- distHaversine(cbind(data$start.station.longitude, data$start.station.latitude), cbind(data$end.station.longitude, data$end.station.latitude)))
 colnames(data)[38] <- "distance"
-
 # Speed
 ## Values in m/s
 data$speed <- data$distance / data$tripduration
-
 # Time Period of the Day
 data$time <- cut(data$start_hr, breaks = c(-Inf, 3, 11, 15, 19, Inf), labels = c("night", "morning", "afternoon", "evening", "night"))
 
@@ -70,8 +61,8 @@ data$time <- cut(data$start_hr, breaks = c(-Inf, 3, 11, 15, 19, Inf), labels = c
 # Split to Train & Test Data
 
 library(plyr)
-data_per_day <- ddply(data,.(start_mth, start_day, usertype, day, age_group, time, day_count, Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$tripduration), function(x) mean(x$speed), nrow))
-colnames(data_per_day) = c("start_month","start_day","usertype","day","age_group","time","day_count","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_trip_duration","avg_speed","frequency")
+data_per_day <- ddply(data,.(start_mth, start_day, start.station.id, usertype, day, age_group, time, day_count, Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$tripduration), function(x) mean(x$speed), nrow))
+colnames(data_per_day) = c("start_month","start_day","start_station_id","usertype","day","age_group","time","day_count","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_trip_duration","avg_speed","frequency")
 
 set.seed(12345)
 rand_num = sample(1:365,round(365*.8, digits=0),replace=F)
