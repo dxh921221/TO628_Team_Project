@@ -479,7 +479,125 @@ speed_model_comparison
 
 ## Avg travel distance per day
 ```{r}
+# Calculating average travel distance
+train_per_day$avg_distance <- train_per_day$avg_speed * train_per_day$avg_trip_duration
+test_per_day$avg_distance <- test_per_day$avg_speed * test_per_day$avg_trip_duration
+```
 
+### Linear model
+```{r}
+#model
+distance_linear <- lm(avg_distance ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+summary(distance_linear)
+#predict
+distance_pred_linear <- predict(distance_linear, test_per_day) 
+#compare
+plot(distance_pred_linear, test_per_day$avg_distance, main = "Linear Model For Distance",
+     xlab = "predicted" , ylab = "actual")
+abline(a = 0, b = 1, col = "red")
+#compute prediction accuracy with threshold of 5%
+distance_accuracy_linear = ifelse(abs(distance_pred_linear - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
+distance_accuracy_linear
+```
+
+### KNN
+```{r}
+#load library
+library(class)
+#model
+train_labels = train_per_day$avg_distance
+test_labels = test_per_day$avg_distance
+#predict
+distance_pred_knn = knn(train = train_per_day, test = test_per_day, cl = train_labels, k = 17) #sqrt(sample size) is a rule of thumb
+#compare
+plot((as.numeric(levels(distance_pred_knn))[distance_pred_knn]), test_per_day$avg_distance, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+#compute prediction accuracy with threshold of 5%
+distance_accuracy_knn = ifelse(abs((as.numeric(levels(distance_pred_knn))[distance_pred_knn]) - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
+```
+### ANN
+```{r}
+#load library
+library(neuralnet)
+#model
+distance_model_ann = neuralnet(formula = avg_distance ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day, hidden = 3)
+#predict
+distance_pred_ann = compute(distance_model_ann, test_per_day)
+distance_pred_ann_result = distance_pred_ann$net.result
+#compare
+plot(distance_pred_ann_result, test_per_day$avg_distance, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+#compute prediction accuracy with threshold of 5%
+distance_accuracy_ann = ifelse(abs(distance_pred_ann_result - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
+```
+
+### SVM
+```{r}
+#load library
+library(kernlab)
+#model
+distance_model_svm = ksvm(avg_distance ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day, kernel = "vanilladot")
+  
+#predict
+distance_pred_svm = predict(distance_model_svm, test_per_day)
+#compare
+plot(distance_pred_svm, test_per_day$avg_distance, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+#compute prediction accuracy with threshold of 5%
+distance_accuracy_svm = ifelse(abs(distance_pred_svm - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
+```
+
+### Decision Trees
+```{r}
+#load library
+library(C50)
+#model
+distance_model_dt = C5.0(as.factor(avg_distance) ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+  
+#predict
+distance_pred_dt = predict(distance_model_dt, test_per_day)
+#compare
+plot((as.numeric(levels(distance_pred_dt))[distance_pred_dt]), test_per_day$avg_distance, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+#compute prediction accuracy with threshold of 5%
+distance_accuracy_dt = ifelse(abs((as.numeric(levels(distance_pred_dt))[distance_pred_dt]) - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
+```
+
+### Random Forest
+```{r}
+#load library
+library(randomForest)
+#model
+set.seed(12345)
+distance_model_rf = randomForest(as.factor(avg_distance) ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+  
+#predict
+distance_pred_rf = predict(distance_model_rf, test_per_day)
+#compare
+plot((as.numeric(levels(distance_pred_rf))[distance_pred_rf]), test_per_day$avg_distance, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+#compute prediction accuracy with threshold of 5%
+distance_accuracy_rf = ifelse(abs((as.numeric(levels(distance_pred_rf))[distance_pred_rf]) - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
+```
+### Assess Models
+```{r}
+distance_model_comparison = matrix(0, nrow=6, ncol=3)
+colnames(distance_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
+rownames(distance_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+distance_model_comparison[1,] = c((length(distance_accuracy_linear)-sum(distance_accuracy_linear)), sum(distance_accuracy_linear), round(sum(distance_accuracy_linear)/length(distance_accuracy_linear),3))
+distance_model_comparison[2,] = c((length(distance_accuracy_knn)-sum(distance_accuracy_knn)), sum(distance_accuracy_knn), round(sum(distance_accuracy_knn)/length(distance_accuracy_knn),3))
+distance_model_comparison[3,] = c((length(distance_accuracy_ann)-sum(distance_accuracy_ann)), sum(distance_accuracy_ann), round(sum(distance_accuracy_ann)/length(distance_accuracy_ann),3))
+distance_model_comparison[4,] = c((length(distance_accuracy_svm)-sum(distance_accuracy_svm)), sum(distance_accuracy_svm), round(sum(distance_accuracy_svm)/length(distance_accuracy_svm),3))
+distance_model_comparison[5,] = c((length(distance_accuracy_dt)-sum(distance_accuracy_dt)), sum(distance_accuracy_dt), round(sum(distance_accuracy_dt)/length(distance_accuracy_dt),3))
+distance_model_comparison[6,] = c((length(distance_accuracy_rf)-sum(distance_accuracy_rf)), sum(distance_accuracy_rf), round(sum(distance_accuracy_rf)/length(distance_accuracy_rf),3))
+```
+
+### Findings
+
+
+
+```{r}
+distance_model_comparison
 ```
 
 ## Age group
