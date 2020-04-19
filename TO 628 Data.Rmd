@@ -69,13 +69,18 @@ data$time <- cut(data$start_hr, breaks = c(-Inf, 3, 11, 15, 19, Inf), labels = c
 ```{r}
 # Split to Train & Test Data
 
-set.seed(12345)
+library(plyr)
+data_per_day <- ddply(data,.(start_mth, start_day, usertype, day, age_group, time, day_count, Ave.Wind.Speed,TMIN...C. ,TMAX...C. ,  PRCP..mm. , SNOW..mm.), c(function(x) mean(x$tripduration), function(x) mean(x$speed), nrow))
+colnames(data_per_day) = c("start_month","start_day","usertype","day","age_group","time","day_count","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_trip_duration","avg_speed","frequency")
 
-bike_train <- data[1:(0.8*nrow(data)),]
-bike_test <- data[(0.8*nrow(data)):nrow(data),]
+set.seed(12345)
+rand_num = sample(1:365,round(365*.8, digits=0),replace=F)
+bike_train = filter(data_per_day, day_count %in% rand_num)
+'%notin%' = Negate('%in%')
+bike_test = filter(data_per_day, day_count %notin% rand_num)
 
 # Export to CSV Files 
-write.csv(bike_train,"/Users/brian/Downloads/628 Project/train_final.csv")
-write.csv(bike_test,"/Users/brian/Downloads/628 Project/test_final.csv")
+write.csv(bike_train,"train_final.csv")
+write.csv(bike_test,"test_final.csv")
 ```
 
