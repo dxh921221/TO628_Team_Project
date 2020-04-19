@@ -128,8 +128,10 @@ library(plyr)
 
 #organize data per day (avg trip duration, avg speed per day, total check out per day, avg travel distance per day)
 train_per_day = ddply(traindata,.(start_month,start_day, avg_wind_speed, TMIN, TMAX, PRCP, SNOW), c(function(x) mean(x$avg_trip_duration), function(x) mean(x$avg_speed), function(x) sum(x$frequency)))
+colnames(train_per_day) = c("start_month","start_day","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_trip_duration","avg_speed","frequency")
 
 test_per_day = ddply(testdata,.(start_month,start_day, avg_wind_speed, TMIN, TMAX, PRCP, SNOW), c(function(x) mean(x$avg_trip_duration), function(x) mean(x$avg_speed), function(x) sum(x$frequency)))
+colnames(test_per_day) = c("start_month","start_day","avg_wind_speed","TMIN","TMAX","PRCP","SNOW","avg_trip_duration","avg_speed","frequency")
 
 head(train_per_day)
 summary(train_per_day)
@@ -162,6 +164,7 @@ summary(test_per_day)
 
 ## Avg speed per day
 ```{r}
+speed_linear = lm()
 
 ```
 
