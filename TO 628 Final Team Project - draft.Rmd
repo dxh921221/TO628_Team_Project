@@ -462,7 +462,7 @@ speed_model_comparison[6,] = c((length(speed_accuracy_rf)-sum(speed_accuracy_rf)
 ```
 
 ### Findings
-It turns out that knn is best at predicting the average speed with the accuracy of ~81%. 
+It turns out that svm is best at predicting the average speed with the accuracy of ~74%. 
 
 From the linear model, it can be concluded that there is a relationship between average bike speed and weather parameters. For example, it was found that wind speed/TMAX had negative relationship and PRCP had positive relationship with average bike speed. From this, it can be concluded that worse weather results in faster bike speed.
 
