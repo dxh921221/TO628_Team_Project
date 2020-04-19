@@ -97,6 +97,23 @@ summary(traindata_n)
 trip_lm <- lm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
 summary(trip_lm)
 
+#Test model
+
+tripPred <- predict(trip_lm, testdata) 
+
+actuals_preds <- data.frame(cbind(actuals=testdata$tripduration, predicteds=tripPred))  # make actuals_predicteds dataframe
+
+mape <- mean(abs((actuals_preds$predicteds - actuals_preds$actuals))/actuals_preds$actuals)  
+# mean absolute percentage deviation
+
+mape
+
+plot(actuals_preds$actuals,actuals_preds$predicteds, main = "Actuals vs Predicted",
+     xlab = "Actuals" , ylab = "Predicted")
+abline(a = 0, b = 1, col = "red")
+
+
+
 ```
 
 ## Trip duration: KNN
@@ -112,7 +129,7 @@ test_labels <- testdata[,3]
 library(gmodels)
 CrossTable(x = test_labels, y = trip_knn, 
            prop.chisq=FALSE)
-
+#Test model
 
 ```
 
@@ -124,8 +141,22 @@ CrossTable(x = test_labels, y = trip_knn,
 
 
 library(kernlab)
-letter_classifier <- ksvm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata,
+trip_svm<- ksvm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata,
                           kernel = "vanilladot")
+
+trip_svm
+
+#Test model
+trip_svm_Pred<- predict(trip_svm, testdata)
+head(trip_svm_Pred)
+table(trip_svm_Pred, testdata$tripduration)
+svm_correct <- trip_svm_Pred == testdata$tripduration
+table(svm_correct)
+prop.table(table(svm_correct))
+
+confusionMatrix(as.factor(trip_svm_Pred), as.factor(testdata$tripduration))
+
+
 
 
 ```
@@ -134,10 +165,22 @@ letter_classifier <- ksvm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PR
 
 
 ```{r}
-#Linear model
+#Decision tree
 
-trip_lm <- lm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
-summary(trip_lm)
+
+library(C50)
+trip_decision<- C5.0(testdata[-c(10 ,15)], testdata$tripduration)
+trip_decision
+summary(trip_decision)
+#plot(trip_decision)
+
+#Test model
+trip_pred_decision <- predict(trip_decision, testdata)
+library(gmodels)
+CrossTable(testdata$tripduration,trip_pred_decision,
+           prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE,
+           dnn = c('actual trip duration', 'predicted trip duration'))
+
 
 ```
 
@@ -145,9 +188,37 @@ summary(trip_lm)
 
 
 ```{r}
-#Linear model
+#Random forest
 
-trip_lm <- lm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
-summary(trip_lm)
+library(randomForest)
+set.seed(300)
+trip_rf <- randomForest(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
+trip_rf
+
+library(caret)
+ctrl <- trainControl(method = "repeatedcv",
+                     number = 10, repeats = 10)
+
+# auto-tune a random forest
+grid_rf <- expand.grid(.mtry = c(2, 4, 8, 16))
+
+set.seed(300)
+trip_m_rf <- train(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata, method = "rf",
+              metric = "Kappa", trControl = ctrl,
+              tuneGrid = grid_rf)
+trip_m_rf
+
+# auto-tune a boosted C5.0 decision tree
+grid_c50 <- expand.grid(.model = "tree",
+                        .trials = c(10, 20, 30, 40),
+                        .winnow = "FALSE")
+
+set.seed(300)
+m_c50 <- train(default ~ ., data = credit, method = "C5.0",
+                metric = "Kappa", trControl = ctrl,
+               tuneGrid = grid_c50)
+m_c50
+#Test model
+
 
 ```
