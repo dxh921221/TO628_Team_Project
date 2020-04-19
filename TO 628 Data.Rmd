@@ -68,6 +68,9 @@ data$time <- cut(data$start_hr, breaks = c(-Inf, 3, 11, 15, 19, Inf), labels = c
 # Split to Train & Test Data and Export
 ```{r}
 # Split to Train & Test Data
+
+set.seed(12345)
+
 bike_train <- data[1:(0.8*nrow(data)),]
 bike_test <- data[(0.8*nrow(data)):nrow(data),]
 
