@@ -1,0 +1,153 @@
+---
+title: "Trip_duration_modeel_Priti"
+author: "Priti"
+date: "4/18/2020"
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+# Load Datasets
+```{r}
+#load train dataset
+traindata = read.csv("train_final.csv")
+
+#load test dataset
+testdata = read.csv("test_final.csv")
+
+str(traindata)
+
+```
+
+# Clean up Datasets
+Ensure that no additional clean up is needed after train and test datasets are extracted from the entire 2019 usage.
+```{r}
+
+#train dataset
+traindata$X.2 = NULL
+traindata$X.1 = NULL
+traindata$X = NULL
+traindata$start_year = NULL
+traindata$starttime = NULL
+traindata$stop_year = NULL
+traindata$stoptime = NULL
+traindata$Date = NULL
+traindata$start.station.name = NULL
+traindata$end.station.name = NULL
+traindata$usertype = NULL
+traindata$day = NULL
+traindata$end.station.name = NULL
+traindata$end.station.name = NULL
+traindata$start.station.id = as.integer(traindata$start.station.id)
+traindata$end.station.id = as.integer(traindata$end.station.id)
+colnames(traindata)
+str(traindata)
+summary(traindata)
+
+
+#test dataset
+testdata$X.2 = NULL
+testdata$X.1 = NULL
+testdata$X = NULL
+testdata$start_year = NULL
+testdata$starttime = NULL
+testdata$stop_year = NULL
+testdata$stoptime = NULL
+testdata$stoptime = NULL
+testdata$Date = NULL
+testdata$start.station.name = NULL
+testdata$end.station.name = NULL
+testdata$usertype = NULL
+testdata$day = NULL
+testdata$start.station.id = as.integer(testdata$start.station.id)
+testdata$end.station.id = as.integer(testdata$end.station.id)
+colnames(testdata)
+str(testdata)
+summary(testdata)
+
+
+library(class)
+
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+
+traindata_n <- as.data.frame(lapply(traindata[19:22], normalize))
+testdata_n <- as.data.frame(lapply(testdata[19:22], normalize))
+summary(traindata_n)
+                
+                
+```
+
+# Modeling
+
+## Trip duration: Linear model
+
+
+```{r}
+#Linear model
+
+trip_lm <- lm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
+summary(trip_lm)
+
+```
+
+## Trip duration: KNN
+
+```{r}
+#KNN
+
+train_labels <- traindata[,3]
+trip_knn <- knn(train = traindata, cl = train_labels, test = testdata, k=3)
+
+test_labels <- testdata[,3]
+
+library(gmodels)
+CrossTable(x = test_labels, y = trip_knn, 
+           prop.chisq=FALSE)
+
+
+```
+
+## Trip duration: SVM
+
+
+```{r}
+#SVM
+
+
+library(kernlab)
+letter_classifier <- ksvm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata,
+                          kernel = "vanilladot")
+
+
+```
+
+## Trip duration: Decision tree
+
+
+```{r}
+#Linear model
+
+trip_lm <- lm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
+summary(trip_lm)
+
+```
+
+## Trip duration: Random forest
+
+
+```{r}
+#Linear model
+
+trip_lm <- lm(tripduration ~ TMIN...C. + TMAX...C.+Ave.Wind.Speed+PRCP..mm. + SNOW..mm., data = traindata)
+summary(trip_lm)
+
+```
