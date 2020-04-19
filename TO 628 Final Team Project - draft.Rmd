@@ -16,15 +16,14 @@ output:
 ---
 
 # Class Topics
-So far, we have learned about the following topics. For this project, one or more of the following options will be pursued for modeling and detailed analysis.
+So far, we have learned about the following topics. For this project, the following options will be pursued for modeling and detailed analysis.
 
   1. Linear Regression
-  2. Logistic Regression
-  3. KNN
-  4. ANN
-  5. SVM
-  6. Decision Trees
-  7. Random Forest
+  2. KNN
+  3. ANN
+  4. SVM
+  5. Decision Trees
+  6. Random Forest
 
 # Motivation
 To be filled out.
@@ -71,9 +70,6 @@ traindata = read.csv("train_final.csv")
 
 #load test dataset
 testdata = read.csv("test_final.csv")
-
-#load data - station information
-#station_info = read.csv("station_information.csv")
 
 ```
 
@@ -141,9 +137,8 @@ summary(test_per_day)
 
 # Modeling
 
-  1. Topics learned in class
+  1. Topics to be used
     1. Linear Regression
-    2. Logistic Regression
     3. KNN
     4. ANN
     5. SVM
@@ -154,8 +149,6 @@ summary(test_per_day)
     2. avg speed per day
     3. total check outs per day
     4. avg travel distance per day
-    5. age group
-    6. Others: customer type, time of travel
 
 ## Avg trip duration per day
 
@@ -176,7 +169,7 @@ plot(trip_duration_pred_linear, test_per_day$avg_trip_duration, main = "Linear m
 abline(a = 0, b = 1, col = "red")
 
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 trip_duration_accuracy_linear = ifelse(abs(trip_duration_pred_linear - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
 
 trip_duration_accuracy_linear
@@ -200,7 +193,7 @@ trip_duration_pred_knn = knn(train = train_per_day, test = test_per_day, cl = tr
 plot((as.numeric(levels(trip_duration_pred_knn))[trip_duration_pred_knn]), test_per_day$avg_trip_duration, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 trip_duration_accuracy_knn = ifelse(abs((as.numeric(levels(trip_duration_pred_knn))[trip_duration_pred_knn]) - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
 
 ```
@@ -221,7 +214,7 @@ trip_duration_pred_ann_result = trip_duration_pred_ann$net.result
 plot(trip_duration_pred_ann_result, test_per_day$avg_trip_duration, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 trip_duration_accuracy_ann = ifelse(abs(trip_duration_pred_ann_result - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
 
 ```
@@ -242,7 +235,7 @@ trip_duration_pred_svm = predict(trip_duration_model_svm, test_per_day)
 plot(trip_duration_pred_svm, test_per_day$avg_trip_duration, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 trip_duration_accuracy_svm = ifelse(abs(trip_duration_pred_svm - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
 ```
 
@@ -262,7 +255,7 @@ trip_duration_pred_dt = predict(trip_duration_model_dt, test_per_day)
 plot((as.numeric(levels(trip_duration_pred_dt))[trip_duration_pred_dt]), test_per_day$avg_trip_duration, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 trip_duration_accuracy_dt = ifelse(abs((as.numeric(levels(trip_duration_pred_dt))[trip_duration_pred_dt]) - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
 
 ```
@@ -283,7 +276,7 @@ trip_duration_pred_rf = predict(trip_duration_model_rf, test_per_day)
 plot((as.numeric(levels(trip_duration_pred_rf))[trip_duration_pred_rf]), test_per_day$avg_trip_duration, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 trip_duration_accuracy_rf = ifelse(abs((as.numeric(levels(trip_duration_pred_rf))[trip_duration_pred_rf]) - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
 
 ```
@@ -291,7 +284,7 @@ trip_duration_accuracy_rf = ifelse(abs((as.numeric(levels(trip_duration_pred_rf)
 ```{r}
 trip_duration_model_comparison = matrix(0, nrow=6, ncol=3)
 colnames(trip_duration_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
-rownames(trip_duration_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+rownames(trip_duration_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forest")
 
 trip_duration_model_comparison[1,] = c((length(trip_duration_accuracy_linear)-sum(trip_duration_accuracy_linear)), sum(trip_duration_accuracy_linear), round(sum(trip_duration_accuracy_linear)/length(trip_duration_accuracy_linear),3))
 trip_duration_model_comparison[2,] = c((length(trip_duration_accuracy_knn)-sum(trip_duration_accuracy_knn)), sum(trip_duration_accuracy_knn), round(sum(trip_duration_accuracy_knn)/length(trip_duration_accuracy_knn),3))
@@ -335,8 +328,8 @@ speed_pred_linear = predict(speed_model_linear, newdata = test_per_day)
 plot(speed_pred_linear, test_per_day$avg_speed, main = "Linear model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
-speed_accuracy_linear = ifelse(abs(speed_pred_linear - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+#compute prediction accuracy with threshold of 10%
+speed_accuracy_linear = ifelse(abs(speed_pred_linear - test_per_day$avg_speed)/test_per_day$avg_speed > 0.10, 0, 1)
 
 ```
 
@@ -357,8 +350,8 @@ speed_pred_knn = knn(train = train_per_day, test = test_per_day, cl = train_labe
 plot((as.numeric(levels(speed_pred_knn))[speed_pred_knn]), test_per_day$avg_speed, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
-speed_accuracy_knn = ifelse(abs((as.numeric(levels(speed_pred_knn))[speed_pred_knn]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+#compute prediction accuracy with threshold of 10%
+speed_accuracy_knn = ifelse(abs((as.numeric(levels(speed_pred_knn))[speed_pred_knn]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.10, 0, 1)
 
 ```
 
@@ -379,8 +372,8 @@ speed_pred_ann_result = speed_pred_ann$net.result
 plot(speed_pred_ann_result, test_per_day$avg_speed, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
-speed_accuracy_ann = ifelse(abs(speed_pred_ann_result - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+#compute prediction accuracy with threshold of 10%
+speed_accuracy_ann = ifelse(abs(speed_pred_ann_result - test_per_day$avg_speed)/test_per_day$avg_speed > 0.10, 0, 1)
 
 ```
 
@@ -400,8 +393,8 @@ speed_pred_svm = predict(speed_model_svm, test_per_day)
 plot(speed_pred_svm, test_per_day$avg_speed, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
-speed_accuracy_svm = ifelse(abs(speed_pred_svm - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+#compute prediction accuracy with threshold of 10%
+speed_accuracy_svm = ifelse(abs(speed_pred_svm - test_per_day$avg_speed)/test_per_day$avg_speed > 0.10, 0, 1)
 ```
 
 ### Decision Trees
@@ -420,8 +413,8 @@ speed_pred_dt = predict(speed_model_dt, test_per_day)
 plot((as.numeric(levels(speed_pred_dt))[speed_pred_dt]), test_per_day$avg_speed, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
-speed_accuracy_dt = ifelse(abs((as.numeric(levels(speed_pred_dt))[speed_pred_dt]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+#compute prediction accuracy with threshold of 10%
+speed_accuracy_dt = ifelse(abs((as.numeric(levels(speed_pred_dt))[speed_pred_dt]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.10, 0, 1)
 
 ```
 
@@ -441,8 +434,8 @@ speed_pred_rf = predict(speed_model_rf, test_per_day)
 plot((as.numeric(levels(speed_pred_rf))[speed_pred_rf]), test_per_day$avg_speed, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
 
-#compute prediction accuracy with threshold of 5%
-speed_accuracy_rf = ifelse(abs((as.numeric(levels(speed_pred_rf))[speed_pred_rf]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+#compute prediction accuracy with threshold of 10%
+speed_accuracy_rf = ifelse(abs((as.numeric(levels(speed_pred_rf))[speed_pred_rf]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.10, 0, 1)
 
 ```
 
@@ -450,7 +443,7 @@ speed_accuracy_rf = ifelse(abs((as.numeric(levels(speed_pred_rf))[speed_pred_rf]
 ```{r}
 speed_model_comparison = matrix(0, nrow=6, ncol=3)
 colnames(speed_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
-rownames(speed_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+rownames(speed_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forest")
 
 speed_model_comparison[1,] = c((length(speed_accuracy_linear)-sum(speed_accuracy_linear)), sum(speed_accuracy_linear), round(sum(speed_accuracy_linear)/length(speed_accuracy_linear),3))
 speed_model_comparison[2,] = c((length(speed_accuracy_knn)-sum(speed_accuracy_knn)), sum(speed_accuracy_knn), round(sum(speed_accuracy_knn)/length(speed_accuracy_knn),3))
@@ -462,7 +455,7 @@ speed_model_comparison[6,] = c((length(speed_accuracy_rf)-sum(speed_accuracy_rf)
 ```
 
 ### Findings
-It turns out that svm is best at predicting the average speed with the accuracy of ~74%. 
+It turns out that knn is best at predicting the average speed with the accuracy of ~95%. 
 
 From the linear model, it can be concluded that there is a relationship between average bike speed and weather parameters. For example, it was found that wind speed/TMAX had negative relationship and PRCP had positive relationship with average bike speed. From this, it can be concluded that worse weather results in faster bike speed.
 
@@ -488,7 +481,7 @@ plot(frequency_pred_linear, test_per_day$frequency, main = "Linear model Predict
 abline(a = 0, b = 1, col = "red")
 
 
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 frequency_accuracy_linear = ifelse(abs(frequency_pred_linear - test_per_day$frequency)/test_per_day$frequency > 0.10, 0, 1)
 ```
 
@@ -504,7 +497,7 @@ frequency_pred_knn = knn(train = train_per_day, test = test_per_day, cl = train_
 #compare
 plot((as.numeric(levels(frequency_pred_knn))[frequency_pred_knn]), test_per_day$frequency, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 frequency_accuracy_knn = ifelse(abs((as.numeric(levels(frequency_pred_knn))[frequency_pred_knn]) - test_per_day$frequency)/test_per_day$frequency > 0.10, 0, 1)
 
 ```
@@ -521,7 +514,7 @@ frequency_pred_ann_result = frequency_pred_ann$net.result
 #compare
 plot(frequency_pred_ann_result, test_per_day$frequency, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 frequency_accuracy_ann = ifelse(abs(frequency_pred_ann_result - test_per_day$frequency)/test_per_day$frequency > 0.10, 0, 1)
 ```
 
@@ -537,7 +530,7 @@ frequency_pred_svm = predict(frequency_model_svm, test_per_day)
 #compare
 plot(frequency_pred_svm, test_per_day$frequency, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 frequency_accuracy_svm = ifelse(abs(frequency_pred_svm - test_per_day$frequency)/test_per_day$frequency > 0.10, 0, 1)
 ```
 
@@ -554,7 +547,7 @@ frequency_pred_dt = predict(frequency_model_dt, test_per_day)
 #compare
 plot((as.numeric(levels(frequency_pred_dt))[frequency_pred_dt]), test_per_day$frequency, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 frequency_accuracy_dt = ifelse(abs((as.numeric(levels(frequency_pred_dt))[frequency_pred_dt]) - test_per_day$frequency)/test_per_day$frequency > 0.10, 0, 1)
 ```
 
@@ -571,7 +564,7 @@ frequency_pred_rf = predict(frequency_model_rf, test_per_day)
 #compare
 plot((as.numeric(levels(frequency_pred_rf))[frequency_pred_rf]), test_per_day$frequency, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 frequency_accuracy_rf = ifelse(abs((as.numeric(levels(frequency_pred_rf))[frequency_pred_rf]) - test_per_day$frequency)/test_per_day$frequency > 0.10, 0, 1)
 ```
 
@@ -579,7 +572,7 @@ frequency_accuracy_rf = ifelse(abs((as.numeric(levels(frequency_pred_rf))[freque
 ```{r}
 frequency_model_comparison = matrix(0, nrow=6, ncol=3)
 colnames(frequency_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
-rownames(frequency_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+rownames(frequency_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forest")
 frequency_model_comparison[1,] = c((length(frequency_accuracy_linear)-sum(frequency_accuracy_linear)), sum(frequency_accuracy_linear), round(sum(frequency_accuracy_linear)/length(frequency_accuracy_linear),3))
 frequency_model_comparison[2,] = c((length(frequency_accuracy_knn)-sum(frequency_accuracy_knn)), sum(frequency_accuracy_knn), round(sum(frequency_accuracy_knn)/length(frequency_accuracy_knn),3))
 frequency_model_comparison[3,] = c((length(frequency_accuracy_ann)-sum(frequency_accuracy_ann)), sum(frequency_accuracy_ann), round(sum(frequency_accuracy_ann)/length(frequency_accuracy_ann),3))
@@ -619,7 +612,7 @@ distance_pred_linear <- predict(distance_linear, test_per_day)
 plot(distance_pred_linear, test_per_day$avg_distance, main = "Linear Model For Distance",
      xlab = "predicted" , ylab = "actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 distance_accuracy_linear = ifelse(abs(distance_pred_linear - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
 distance_accuracy_linear
 ```
@@ -636,7 +629,7 @@ distance_pred_knn = knn(train = train_per_day, test = test_per_day, cl = train_l
 #compare
 plot((as.numeric(levels(distance_pred_knn))[distance_pred_knn]), test_per_day$avg_distance, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 distance_accuracy_knn = ifelse(abs((as.numeric(levels(distance_pred_knn))[distance_pred_knn]) - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
 ```
 ### ANN
@@ -651,7 +644,7 @@ distance_pred_ann_result = distance_pred_ann$net.result
 #compare
 plot(distance_pred_ann_result, test_per_day$avg_distance, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 distance_accuracy_ann = ifelse(abs(distance_pred_ann_result - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
 ```
 
@@ -667,7 +660,7 @@ distance_pred_svm = predict(distance_model_svm, test_per_day)
 #compare
 plot(distance_pred_svm, test_per_day$avg_distance, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 distance_accuracy_svm = ifelse(abs(distance_pred_svm - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
 ```
 
@@ -683,7 +676,7 @@ distance_pred_dt = predict(distance_model_dt, test_per_day)
 #compare
 plot((as.numeric(levels(distance_pred_dt))[distance_pred_dt]), test_per_day$avg_distance, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 distance_accuracy_dt = ifelse(abs((as.numeric(levels(distance_pred_dt))[distance_pred_dt]) - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
 ```
 
@@ -700,14 +693,14 @@ distance_pred_rf = predict(distance_model_rf, test_per_day)
 #compare
 plot((as.numeric(levels(distance_pred_rf))[distance_pred_rf]), test_per_day$avg_distance, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
 abline(a = 0, b = 1, col = "red")
-#compute prediction accuracy with threshold of 5%
+#compute prediction accuracy with threshold of 10%
 distance_accuracy_rf = ifelse(abs((as.numeric(levels(distance_pred_rf))[distance_pred_rf]) - test_per_day$avg_distance)/test_per_day$avg_distance > 0.10, 0, 1)
 ```
 ### Assess Models
 ```{r}
 distance_model_comparison = matrix(0, nrow=6, ncol=3)
 colnames(distance_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
-rownames(distance_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+rownames(distance_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forest")
 distance_model_comparison[1,] = c((length(distance_accuracy_linear)-sum(distance_accuracy_linear)), sum(distance_accuracy_linear), round(sum(distance_accuracy_linear)/length(distance_accuracy_linear),3))
 distance_model_comparison[2,] = c((length(distance_accuracy_knn)-sum(distance_accuracy_knn)), sum(distance_accuracy_knn), round(sum(distance_accuracy_knn)/length(distance_accuracy_knn),3))
 distance_model_comparison[3,] = c((length(distance_accuracy_ann)-sum(distance_accuracy_ann)), sum(distance_accuracy_ann), round(sum(distance_accuracy_ann)/length(distance_accuracy_ann),3))
@@ -718,19 +711,12 @@ distance_model_comparison[6,] = c((length(distance_accuracy_rf)-sum(distance_acc
 
 ### Findings
 
-
-
 ```{r}
 distance_model_comparison
 ```
 
-## Age group
-```{r}
 
-```
-
-
-
+# Conclusion
 
 
 
