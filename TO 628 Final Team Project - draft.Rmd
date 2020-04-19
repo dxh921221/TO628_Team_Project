@@ -163,9 +163,155 @@ summary(test_per_day)
 ```
 
 ## Avg speed per day
+### Linear Model
 ```{r}
-speed_linear = lm()
 
+#model
+speed_model_linear = lm(avg_speed ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+summary(speed_model_linear)
+
+#predict
+speed_pred_linear = predict(speed_model_linear, newdata = test_per_day)
+
+#compare
+plot(speed_pred_linear, test_per_day$avg_speed, main = "Linear model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+speed_accuracy_linear = ifelse(abs(speed_pred_linear - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+
+```
+
+### KNN
+```{r}
+
+#load library
+library(class)
+
+#model
+train_labels = train_per_day$avg_speed
+test_labels = test_per_day$avg_speed
+
+#predict
+speed_pred_knn = knn(train = train_per_day, test = test_per_day, cl = train_labels, k = 17) #sqrt(sample size) is a rule of thumb
+
+#compare
+plot((as.numeric(levels(speed_pred_knn))[speed_pred_knn]), test_per_day$avg_speed, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+speed_accuracy_knn = ifelse(abs((as.numeric(levels(speed_pred_knn))[speed_pred_knn]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+
+```
+
+### ANN
+```{r}
+
+#load library
+library(neuralnet)
+
+#model
+speed_model_ann = neuralnet(formula = avg_speed ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day, hidden = 3)
+
+#predict
+speed_pred_ann = compute(speed_model_ann, test_per_day)
+speed_pred_ann_result = speed_pred_ann$net.result
+
+#compare
+plot(speed_pred_ann_result, test_per_day$avg_speed, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+speed_accuracy_ann = ifelse(abs(speed_pred_ann_result - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+
+```
+
+### SVM
+```{r}
+
+#load library
+library(kernlab)
+
+#model
+speed_model_svm = ksvm(avg_speed ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day, kernel = "vanilladot")
+  
+#predict
+speed_pred_svm = predict(speed_model_svm, test_per_day)
+
+#compare
+plot(speed_pred_svm, test_per_day$avg_speed, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+speed_accuracy_svm = ifelse(abs(speed_pred_svm - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+```
+
+### Decision Trees
+```{r}
+
+#load library
+library(C50)
+
+#model
+speed_model_dt = C5.0(as.factor(avg_speed) ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+  
+#predict
+speed_pred_dt = predict(speed_model_dt, test_per_day)
+
+#compare
+plot((as.numeric(levels(speed_pred_dt))[speed_pred_dt]), test_per_day$avg_speed, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+speed_accuracy_dt = ifelse(abs((as.numeric(levels(speed_pred_dt))[speed_pred_dt]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+
+```
+
+### Random Forest
+```{r}
+#load library
+library(randomForest)
+
+#model
+set.seed(12345)
+speed_model_rf = randomForest(as.factor(avg_speed) ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+  
+#predict
+speed_pred_rf = predict(speed_model_rf, test_per_day)
+
+#compare
+plot((as.numeric(levels(speed_pred_rf))[speed_pred_rf]), test_per_day$avg_speed, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+speed_accuracy_rf = ifelse(abs((as.numeric(levels(speed_pred_rf))[speed_pred_rf]) - test_per_day$avg_speed)/test_per_day$avg_speed > 0.05, 0, 1)
+
+```
+
+### Assess Models
+```{r}
+speed_model_comparison = matrix(0, nrow=6, ncol=3)
+colnames(speed_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
+rownames(speed_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+
+speed_model_comparison[1,] = c((length(speed_accuracy_linear)-sum(speed_accuracy_linear)), sum(speed_accuracy_linear), round(sum(speed_accuracy_linear)/length(speed_accuracy_linear),3))
+speed_model_comparison[2,] = c((length(speed_accuracy_knn)-sum(speed_accuracy_knn)), sum(speed_accuracy_knn), round(sum(speed_accuracy_knn)/length(speed_accuracy_knn),3))
+speed_model_comparison[3,] = c((length(speed_accuracy_ann)-sum(speed_accuracy_ann)), sum(speed_accuracy_ann), round(sum(speed_accuracy_ann)/length(speed_accuracy_ann),3))
+speed_model_comparison[4,] = c((length(speed_accuracy_svm)-sum(speed_accuracy_svm)), sum(speed_accuracy_svm), round(sum(speed_accuracy_svm)/length(speed_accuracy_svm),3))
+speed_model_comparison[5,] = c((length(speed_accuracy_dt)-sum(speed_accuracy_dt)), sum(speed_accuracy_dt), round(sum(speed_accuracy_dt)/length(speed_accuracy_dt),3))
+speed_model_comparison[6,] = c((length(speed_accuracy_rf)-sum(speed_accuracy_rf)), sum(speed_accuracy_rf), round(sum(speed_accuracy_rf)/length(speed_accuracy_rf),3))
+
+```
+
+### Findings
+It turns out that knn is best at predicting the average speed with the accuracy of ~81%. 
+
+From the linear model, it can be concluded that there is a relationship between average bike speed and weather parameters. For example, it was found that wind speed/TMAX had negative relationship and PRCP had positive relationship with average bike speed. From this, it can be concluded that worse weather results in faster bike speed.
+
+Additionally, it was found that start month is negatively related to the average bike speed. This finding can be correlated with the weather-related finding noted above in a way that higher month (colder weather) results in faster bike speed.
+
+```{r}
+speed_model_comparison
 ```
 
 ## Total check outs per day
