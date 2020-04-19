@@ -333,6 +333,17 @@ speed_accuracy_linear = ifelse(abs(speed_pred_linear - test_per_day$avg_speed)/t
 
 ```
 
+### Linear Model - Interaction
+For interaction, look at significant factors from simple linear regression
+```{r}
+
+#model
+speed_model_linear_interaction = lm(avg_speed ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW + start_month * avg_wind_speed + start_month * TMAX + start_month * PRCP + avg_wind_speed * TMAX + avg_wind_speed * PRCP + TMAX * PRCP, data = train_per_day)
+
+summary(speed_model_linear_interaction)
+
+```
+
 ### KNN
 ```{r}
 
@@ -457,7 +468,7 @@ speed_model_comparison[6,] = c((length(speed_accuracy_rf)-sum(speed_accuracy_rf)
 ### Findings
 It turns out that knn is best at predicting the average speed with the accuracy of ~95%. 
 
-From the linear model, it can be concluded that there is a relationship between average bike speed and weather parameters. For example, it was found that wind speed/TMAX had negative relationship and PRCP had positive relationship with average bike speed. From this, it can be concluded that worse weather results in faster bike speed.
+From the linear model, it can be concluded that there is a relationship between average bike speed and weather parameters. For example, it was found that wind speed/TMAX had negative relationship and PRCP had positive relationship with average bike speed. From this, it can be concluded that worse weather results in faster bike speed. Also, among significant factors from simple linear regression model, it was found that there is a negative interaction between average wind speed and TMAX (higher temperature, lower wind speed).
 
 Additionally, it was found that start month is negatively related to the average bike speed. This finding can be correlated with the weather-related finding noted above in a way that higher month (colder weather) results in faster bike speed.
 
