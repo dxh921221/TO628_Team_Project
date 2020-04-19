@@ -1,0 +1,189 @@
+
+---
+title: "TO 628 Final Team Project"
+author: "Team 7: Xuhao Dai, Anubhav Gupta, Yongsoo Shin, Priti Singh, Brian Tsai"
+date: "Due on April 20, 2020"
+output:
+  html_document:
+    theme: spacelab
+    highlight: tango
+    toc: true
+    number_sections: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+# Class Topics
+So far, we have learned about the following topics. For this project, one or more of the following options will be pursued for modeling and detailed analysis.
+
+  1. Linear Regression
+  2. Logistic Regression
+  3. KNN
+  4. ANN
+  5. SVM
+  6. Decision Trees
+  7. Random Forest
+
+# Motivation
+To be filled out.
+
+# Read Me
+This document presents the group project for which city bike data in NYC is used. The purpose of this document is to share analysis of the influence of weather to the bike usage.
+
+Here, city bike data from 2019 will be used for the analysis. Specifically, 5% of the entire 2019 data was extracted, and the extracted data was categorized into average ride usage per day (365 days in total). Thereafter, the yearly usage data was randomly divided into train (80%, 292 days) and test (20%, 73 days) for the modeling, testing the accuracy of the models, and business analytics. 
+
+Ultimately, the findings will be used to identify the relationship between weather and bike usage and predict the bike usage based on chosen parameters (e.g. precipitation amount). Thereafter, some insights will be presented for the bike business.
+
+Note that there was an effort to retrieve station capacity information into the dataset. However, it was not pursued as only 20% of the stations in the dataset were identified with the capacity.
+
+# Dataset Explanation
+  - City bike data in NYC
+  - Each dataset is comprised of 1 month trip data
+    - Data from 12 months of 2019 have been combined and divided into train (80%) and test (20%) datasets.
+  - Variables (City bike):
+    - trip duration (sec)
+    - start time (year, month, day, time)
+    - stop time (year, month, day, time)
+    - start station (id, lat/long)
+    - end station (id, lat/long)
+    - bike id
+    - user type
+      - customer (24 hr vs 3 day)
+      - subscriber (annual)
+    - birth year
+    - gender (0, 1, 2 = unknown, male, female)
+    - trip distance (based on the lat/long, trip distance was calculated with r package haversine)
+    - trip speed (based on trip distance, trip speed was calculated with trip duration)
+    - total # bike rentals (per day)
+  - Variables (Weather):
+    - TMIN (minimum temperature in C)
+    - TMAX (maximum temperature in C)
+    - Average wind speed
+    - PRCP (mm)
+    - SNOW (mm)
+
+# Load Datasets
+```{r}
+#load train dataset
+traindata = read.csv("train_final.csv")
+
+#load test dataset
+testdata = read.csv("test_final.csv")
+
+#load data - station information
+#station_info = read.csv("station_information.csv")
+
+```
+
+# Clean up Datasets
+Ensure that no additional clean up is needed after train and test datasets are extracted from the entire 2019 usage.
+```{r}
+
+#train dataset
+traindata$X = NULL
+traindata$Date = NULL
+traindata$start_station_id = as.integer(traindata$start_station_id)
+colnames(traindata)
+str(traindata)
+summary(traindata)
+
+
+#test dataset
+testdata$X = NULL
+testdata$Date = NULL
+testdata$start_station_id = as.integer(testdata$start_station_id)
+colnames(testdata)
+str(testdata)
+summary(testdata)
+
+```
+
+# Further Data Exploration
+```{r}
+
+#1. trip duration
+boxplot(traindata$avg_trip_duration, main = "trip duration (sec)")
+hist(traindata$avg_trip_duration, main = "trip duration (sec)")
+
+#5. birth year
+summary(traindata$age_group)
+
+#6. user type
+summary(traindata$usertype)
+
+```
+
+# Data Preparation for Modeling
+Data has been reorganized to split the data per each day. Information about start day and end day are treated separately. The information of interest are: average birth year, average trip duration, and total check-ins/check-outs per given day.
+
+```{r}
+# Look for and download plyr package if it does not already exist
+if (!require("plyr")) {
+  install.packages("plyr")
+}
+#read in plyr package
+library(plyr)
+
+#organize data per day (avg trip duration, avg speed per day, total check out per day, avg travel distance per day)
+train_per_day = ddply(traindata,.(start_month,start_day, avg_wind_speed, TMIN, TMAX, PRCP, SNOW), c(function(x) mean(x$avg_trip_duration), function(x) mean(x$avg_speed), function(x) sum(x$frequency)))
+
+test_per_day = ddply(testdata,.(start_month,start_day, avg_wind_speed, TMIN, TMAX, PRCP, SNOW), c(function(x) mean(x$avg_trip_duration), function(x) mean(x$avg_speed), function(x) sum(x$frequency)))
+
+head(train_per_day)
+summary(train_per_day)
+head(test_per_day)
+summary(test_per_day)
+```
+
+# Modeling
+
+  1. Topics learned in class
+    1. Linear Regression
+    2. Logistic Regression
+    3. KNN
+    4. ANN
+    5. SVM
+    6. Decision Trees
+    7. Random Forest
+  2. Modeling
+    1. avg trip duration per day
+    2. avg speed per day
+    3. total check outs per day
+    4. avg travel distance per day
+    5. age group
+    6. Others: customer type, time of travel
+
+## Avg trip duration per day
+```{r}
+
+```
+
+## Avg speed per day
+```{r}
+
+```
+
+## Total check outs per day
+```{r}
+
+```
+
+## Avg travel distance per day
+```{r}
+
+```
+
+## Age group
+```{r}
+
+```
+
+
+
+
+
+
+
+
