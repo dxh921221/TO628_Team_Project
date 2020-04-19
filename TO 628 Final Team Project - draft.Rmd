@@ -158,9 +158,166 @@ summary(test_per_day)
     6. Others: customer type, time of travel
 
 ## Avg trip duration per day
+
+### Linear model
 ```{r}
+#model
+
+trip_duration_linear <- lm(avg_trip_duration ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+
+summary(trip_duration_linear)
+
+#predict
+trip_duration_pred_linear <- predict(trip_duration_linear, test_per_day) 
+
+#compare
+plot(trip_duration_pred_linear, test_per_day$avg_trip_duration, main = "Linear model Prediction Assessmen",
+     xlab = "predicted" , ylab = "actual")
+abline(a = 0, b = 1, col = "red")
+
+
+#compute prediction accuracy with threshold of 5%
+trip_duration_accuracy_linear = ifelse(abs(trip_duration_pred_linear - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
+
+trip_duration_accuracy_linear
 
 ```
+
+### KNN
+```{r}
+
+#load library
+library(class)
+
+#model
+train_labels = train_per_day$avg_trip_duration
+test_labels = test_per_day$avg_trip_duration
+
+#predict
+trip_duration_pred_knn = knn(train = train_per_day, test = test_per_day, cl = train_labels, k = 17) #sqrt(sample size) is a rule of thumb
+
+#compare
+plot((as.numeric(levels(trip_duration_pred_knn))[trip_duration_pred_knn]), test_per_day$avg_trip_duration, main = "KNN model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+trip_duration_accuracy_knn = ifelse(abs((as.numeric(levels(trip_duration_pred_knn))[trip_duration_pred_knn]) - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
+
+```
+### ANN
+```{r}
+
+#load library
+library(neuralnet)
+
+#model
+trip_duration_model_ann = neuralnet(formula = avg_trip_duration ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day, hidden = 3)
+
+#predict
+trip_duration_pred_ann = compute(trip_duration_model_ann, test_per_day)
+trip_duration_pred_ann_result = trip_duration_pred_ann$net.result
+
+#compare
+plot(trip_duration_pred_ann_result, test_per_day$avg_trip_duration, main = "ANN model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+trip_duration_accuracy_ann = ifelse(abs(trip_duration_pred_ann_result - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
+
+```
+
+### SVM
+```{r}
+
+#load library
+library(kernlab)
+
+#model
+trip_duration_model_svm = ksvm(avg_trip_duration ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day, kernel = "vanilladot")
+  
+#predict
+trip_duration_pred_svm = predict(trip_duration_model_svm, test_per_day)
+
+#compare
+plot(trip_duration_pred_svm, test_per_day$avg_trip_duration, main = "SVM model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+trip_duration_accuracy_svm = ifelse(abs(trip_duration_pred_svm - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
+```
+
+### Decision Trees
+```{r}
+
+#load library
+library(C50)
+
+#model
+trip_duration_model_dt = C5.0(as.factor(avg_trip_duration) ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+  
+#predict
+trip_duration_pred_dt = predict(trip_duration_model_dt, test_per_day)
+
+#compare
+plot((as.numeric(levels(trip_duration_pred_dt))[trip_duration_pred_dt]), test_per_day$avg_trip_duration, main = "Decision Tree model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+trip_duration_accuracy_dt = ifelse(abs((as.numeric(levels(trip_duration_pred_dt))[trip_duration_pred_dt]) - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
+
+```
+
+### Random Forest
+```{r}
+#load library
+library(randomForest)
+
+#model
+set.seed(12345)
+trip_duration_model_rf = randomForest(as.factor(avg_trip_duration) ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+  
+#predict
+trip_duration_pred_rf = predict(trip_duration_model_rf, test_per_day)
+
+#compare
+plot((as.numeric(levels(trip_duration_pred_rf))[trip_duration_pred_rf]), test_per_day$avg_trip_duration, main = "Random Forest model Prediction Assessment", xlab="predicted", ylab="actual")
+abline(a = 0, b = 1, col = "red")
+
+#compute prediction accuracy with threshold of 5%
+trip_duration_accuracy_rf = ifelse(abs((as.numeric(levels(trip_duration_pred_rf))[trip_duration_pred_rf]) - test_per_day$avg_trip_duration)/test_per_day$avg_trip_duration > 0.10, 0, 1)
+
+```
+### Assess Models
+```{r}
+trip_duration_model_comparison = matrix(0, nrow=6, ncol=3)
+colnames(trip_duration_model_comparison) = c("bad_prediction","good_prediction", "accuracy")
+rownames(trip_duration_model_comparison) = c("linear","knn","ann","svm","decision_tree","random_forst")
+
+trip_duration_model_comparison[1,] = c((length(trip_duration_accuracy_linear)-sum(trip_duration_accuracy_linear)), sum(trip_duration_accuracy_linear), round(sum(trip_duration_accuracy_linear)/length(trip_duration_accuracy_linear),3))
+trip_duration_model_comparison[2,] = c((length(trip_duration_accuracy_knn)-sum(trip_duration_accuracy_knn)), sum(trip_duration_accuracy_knn), round(sum(trip_duration_accuracy_knn)/length(trip_duration_accuracy_knn),3))
+trip_duration_model_comparison[3,] = c((length(trip_duration_accuracy_ann)-sum(trip_duration_accuracy_ann)), sum(trip_duration_accuracy_ann), round(sum(trip_duration_accuracy_ann)/length(trip_duration_accuracy_ann),3))
+trip_duration_model_comparison[4,] = c((length(trip_duration_accuracy_svm)-sum(trip_duration_accuracy_svm)), sum(trip_duration_accuracy_svm), round(sum(trip_duration_accuracy_svm)/length(trip_duration_accuracy_svm),3))
+trip_duration_model_comparison[5,] = c((length(trip_duration_accuracy_dt)-sum(trip_duration_accuracy_dt)), sum(trip_duration_accuracy_dt), round(sum(trip_duration_accuracy_dt)/length(trip_duration_accuracy_dt),3))
+trip_duration_model_comparison[6,] = c((length(trip_duration_accuracy_rf)-sum(trip_duration_accuracy_rf)), sum(trip_duration_accuracy_rf), round(sum(trip_duration_accuracy_rf)/length(trip_duration_accuracy_rf),3))
+
+```
+
+### Findings
+
+Based on the different models assessed, SVM gave the best prediction of average trip duration with the accuracy of ~79.5%. This is considering that the results are accurate if lying within 10% range of the actual trip duration value.
+
+From the linear model, it can be concluded that there is a relationship between average trip duration and different weather parameters. For example, it was found that TMAX had a positive relationship and PRCP had a negative relationship with average trip duration. From this, it can be concluded that warmer days have longer rides and rainy days have shorter rides in general.
+
+Additionally, it was found that start month is negatively related to the average bike speed. This finding can be correlated with the weather-related finding noted above in a way that higher month (colder weather) results in faster bike speed.
+
+There was no significant impact of variables TMIN, SNOW, start_month, and start_day. This indicates that the trip duration is not impacted by lower temperatures, snow amount, and trip month or day. 
+
+```{r}
+
+trip_duration_model_comparison
+
+```
+
 
 ## Avg speed per day
 ### Linear Model
@@ -168,6 +325,7 @@ summary(test_per_day)
 
 #model
 speed_model_linear = lm(avg_speed ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW, data = train_per_day)
+
 summary(speed_model_linear)
 
 #predict
