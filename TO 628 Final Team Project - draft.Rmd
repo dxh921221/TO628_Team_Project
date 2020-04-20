@@ -24,7 +24,7 @@ So far, we have learned about the following topics. For this project, the follow
   4. SVM
   5. Decision Trees
   6. Random Forest
-
+  
 # Motivation
 To be filled out.
 
@@ -62,6 +62,23 @@ Note that there was an effort to retrieve station capacity information into the 
     - Average wind speed
     - PRCP (mm)
     - SNOW (mm)
+
+# Data Collection and Preparation 
+NOTE: Due to extreme large raw data set size, a separate RMD is used to process raw data and generate the dataset used for all analysis in this RMD report.  
+
+## Citi Bike Data
+The raw Citi bike 2019 usage dataset is obtained from the website "https://s3.amazonaws.com/tripdata/index.html". All 12 months of data in 2019 is combined first. Due to the extreme large data size (over 22 million rows), a sample size of 5% of the raw dataset is generated using set.seed() function resulting in over 1 million rows of data. Then a few data cleaning processes were completed: 
+
+  1. Extract year, month, day, hour and minute from the column "Date" which contains time information all in one cell which is hard to be used for further analysis. 
+  2. Rows with birth year before 1920 are converted to the median of the whole dataset. The team assumed people over 100 years old might not be able to ride bikes and it was just a joke from people who filled the survey. 
+  3. Rows with trip duration above the 99.9 percentile is removed. Some outliers were noticed such as a trip with 3 million seconds. These outliers would skew the analysis and modeling. Therefore, the team decided to remove them. 
+
+## Weather Data 
+The raw NYC weather data is obtained from NOAA website through Python API. The year, month, day, hour and minute information are extracted from the "Date" column. 
+
+## Data Merging 
+The bike data and weather data were merged using the year, month and day as the relational keys. The final combined dataset were then separated into train (80%) and test (20%) dataset and stored in files "train_final.csv" and "test_final.csv". The team didn't realize that train/test separation should not have been completed in such an early stage until later in the process. However, it was very time consuming to go through everything discussed above just for a combined 5% dataset. Therefore, the team decided to just aggregate both "train_final.csv" and "test_final.csv" at the beginning of further analysis which is much less time consuming. 
+
 
 # Load Datasets
 ```{r}
