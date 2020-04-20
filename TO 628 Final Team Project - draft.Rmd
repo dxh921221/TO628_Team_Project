@@ -202,6 +202,18 @@ trip_duration_accuracy_linear
 
 ```
 
+### Linear Model - Interaction
+For interaction, look at significant factors from simple linear regression
+```{r}
+
+#model
+trip_duration_linear_interaction = lm(avg_trip_duration ~ start_month + start_day + avg_wind_speed + TMIN + TMAX + PRCP + SNOW + TMAX*PRCP , data = train_per_day)
+
+summary(trip_duration_linear_interaction)
+
+```
+
+
 ### KNN
 ```{r}
 
