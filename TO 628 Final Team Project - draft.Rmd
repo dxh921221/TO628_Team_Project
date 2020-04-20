@@ -26,11 +26,7 @@ So far, we have learned about the following topics. For this project, the follow
   6. Random Forest
 
 # Motivation
-Citi Bike is a bicycle sharing service in New York city operated by Motivate, an organization that manages some of the globe's largest bike networks in large cities. Because bikes must be picked up and dropped off at Citi Bike docking stations, people can easily take one-way trips and drop their bike off at 1 of 900 stations. 
-
-With Citi Bikes being available 24 hours/day, 7 days/week, 365 days/year, NYC's enormous population, and variable weather, we believe there are insights to be gleaned from historical rider and local weather data. There are also opportunities for improving safety by sending notifications to riders' phones indicating riding conditions and availability.
-
-This report will use Citi Bike rider and NYC weather data to predict daily customer behavior and describe the relative impact of different weather events on bike usage.
+To be filled out.
 
 # Read Me
 This document presents the group project for which city bike data in NYC is used. The purpose of this document is to share analysis of the influence of weather to the bike usage.
@@ -101,6 +97,11 @@ summary(testdata)
 ```
 
 # Further Data Exploration
+Trip duration is heavily skewed to left although there are decent amount of outliers in the upper end. Note that the extreme 0.5% was removed (e.g. trip duration of 1+ day).
+
+User group appears to be mainly from adult (20-44) and middle age (45-64).
+
+User type turns out to have very high ratio of subscriber.
 ```{r}
 
 #1. trip duration
@@ -725,14 +726,7 @@ distance_model_comparison[6,] = c((length(distance_accuracy_rf)-sum(distance_acc
 ```
 
 ### Findings
-As with previous results, KNN was the best model with a prediction accuracy of ~97% with an error threshold of 10%.
-
-The linear model shows notable linkages between average distance travelled in a day and start month, maximum temperature, and precipitation. 
-
-Ride distances increased precipitously with increase in max daily temperature, dropped with an increase in precipitation, and decreased with increasing calendar months. It is curious to note that through the course of a calendar year, ride distances decreased. One would expect distance to increase from January (winter weather) to July (summer weather) and subsequently decrease through December (return to winter weather). 
-
-Because of the inherent seasonality and human factors involved with the data, a linear regression paints a rough picture but other models such as KNN provide more accurate predictions. 
-
+To be filled.
 ```{r}
 distance_model_comparison
 ```
