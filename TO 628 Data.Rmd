@@ -1,7 +1,7 @@
 ---
-title: "TO 628 Data"
-author: "Brian Tsai"
-date: "4/17/2020"
+title: "TO 628 Secondary Data Cleanup"
+author: "Team 7: Xuhao Dai, Anubhav Gupta, Yongsoo Shin, Priti Singh, Brian Tsai"
+date: "Due on April 20, 2020"
 output:
   pdf_document: default
   html_document:
