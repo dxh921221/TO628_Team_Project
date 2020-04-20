@@ -773,7 +773,7 @@ distance_model_comparison
 
 
 # Conclusion
-We used various regression and machine learning algorithms in the R programming language to predict Citi Bike usage data in NYC compared to the weather. Using 2019 data for both training and testing, KNN consistently provided the highest accuracy models considering a 10% error buffer.
+We used various regression and machine learning algorithms in the R programming language to predict Citi Bike usage data based on the weather information in NYC. Using 2019 data for both training and testing, KNN consistently provided the highest accuracy models considering a 10% error buffer.
 
 Average trip duration, trip distance, and the total number of checkouts per day were positively correlated with increasing TMAX and negatively with PRCP. This is a reasonable outcome as people would generally be inclined to cycle more and longer in warmer weather with less precipitation. 
 
