@@ -67,7 +67,7 @@ Note that there was an effort to retrieve station capacity information into the 
     - PRCP (mm)
     - SNOW (mm)
 
-# Data Collection and Preparation 
+# Data Collection And Preparation 
 NOTE: Due to extreme large raw data set size, a separate RMD is used to process raw data and generate the dataset used for all analysis in this RMD report.  
 
 ## Citi Bike Data
