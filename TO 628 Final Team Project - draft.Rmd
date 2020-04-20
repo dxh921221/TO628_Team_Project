@@ -777,7 +777,7 @@ We used various regression and machine learning algorithms in the R programming 
 
 Average trip duration, trip distance, and the total number of checkouts per day were positively correlated with increasing TMAX and negatively with PRCP. This is a reasonable outcome as people would generally be inclined to cycle more and longer in warmer weather with less precipitation. 
 
-Intriguingly, people tended to cycle faster on colder days with more precipitation. This would indicate people wanted to escape the elements and reach their destination quicker. Faster cycling in inclement weather such as rainfall could result in safety incidents so we recommend Citi Bike pushes weather alerts to its riders when weather forecasts call for colder than normal days or increased precipitation.
+Intriguingly, people tended to cycle faster on colder days with more precipitation. This would indicate people wanted to escape the elements and reach their destination quicker. Faster cycling in inclement weather such as rainfall could result in safety incidents so we recommend Citi Bike pushes weather alerts to its riders when weather forecasts call for colder than normal days or increased precipitation. We also recommend Citi Bike assesses the decrease in bike usage through a calendar year as weather may not be the only factor impacting it.
 
 
 
