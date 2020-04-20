@@ -26,7 +26,11 @@ So far, we have learned about the following topics. For this project, the follow
   6. Random Forest
 
 # Motivation
-To be filled out.
+Citi Bike is a bicycle sharing service in New York city operated by Motivate, an organization that manages some of the globe's largest bike networks in large cities. Because bikes must be picked up and dropped off at Citi Bike docking stations, people can easily take one-way trips and drop their bike off at 1 of 900 stations. 
+
+With Citi Bikes being available 24 hours/day, 7 days/week, 365 days/year, NYC's enormous population, and variable weather, we believe there are insights to be gleaned from historical rider and local weather data. There are also opportunities for improving safety by sending notifications to riders' phones indicating riding conditions and avaiability.
+
+This report will use Citi Bike rider and NYC weather data to predict daily customer behavior and describe the relative impact of different weather events on bike usage.
 
 # Read Me
 This document presents the group project for which city bike data in NYC is used. The purpose of this document is to share analysis of the influence of weather to the bike usage.
