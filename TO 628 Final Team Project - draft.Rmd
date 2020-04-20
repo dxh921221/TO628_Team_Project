@@ -773,8 +773,11 @@ distance_model_comparison
 
 
 # Conclusion
-To be filled.
+We used various regression and machine learning algorithms in the R programming language to predict Citi Bike usage data in NYC compared to the weather. Using 2019 data for both training and testing, KNN consistently provided the highest accuracy models considering a 10% error buffer.
 
+Average trip duration, trip distance, and the total number of checkouts per day were positively correlated with increasing TMAX and negatively with PRCP. This is a reasonable outcome as people would generally be inclined to cycle more and longer in warmer weather with less precipitation. 
+
+Intriguingly, people tended to cycle faster on colder days with more precipitation. This would indicate people wanted to escape the elements and reach their destination quicker. Faster cycling in inclement weather such as rainfall could result in safety incidents so we recommend Citi Bike pushes weather alerts to its riders when weather forecasts call for colder than normal days or increased precipitation.
 
 
 
